@@ -5,18 +5,16 @@
 'use strict'
 
 /* MODULE IMPORTS */
-const Koa = require('koa');
+const Koa = require('koa')
 const Router = require('koa-router')
 const views = require('koa-views')
 const staticDir = require('koa-static')
 const bodyParser = require('koa-bodyparser')
 const koaBody = require('koa-body')({multipart: true, uploadDir: '.'})
 const session = require('koa-session')
-//const jimp = require('jimp')
 
 /* IMPORT CUSTOM MODULES */
 const File = require('./modules/file')
-
 
 
 const app = new Koa()
@@ -30,8 +28,7 @@ app.use(session(app))
 app.use(views(`${__dirname}/views`, { extension: 'handlebars' }, {map: { handlebars: 'handlebars' }}))
 
 const defaultPort = 8080
-const port = process.env.PORT || defaultPort 
-const dbName = 'website.db'	
+const port = process.env.PORT || defaultPort
 
 /**
  * The secure home page.
@@ -44,7 +41,7 @@ router.get('/', async ctx => {
 	try {
 		//Sets authorised to true and username for testing
 		ctx.session.authorised = true
-		ctx.session.user = "test"
+		ctx.session.user = 'test'
 		await ctx.render('index')
 	} catch(err) {
 		await ctx.render('error', {message: err.message})
@@ -52,10 +49,11 @@ router.get('/', async ctx => {
 })
 
 /**
- * The user registration page.
+ * The secure upload page.
  *
- * @name Register Page
- * @route {GET} /register
+ * @name Upload Page
+ * @route {GET} /upload
+ * @authentication This route requires cookie-based authentication.
  */
 
 router.get('/upload', async ctx => {
@@ -68,17 +66,24 @@ router.get('/upload', async ctx => {
 })
 
 
-router.post('/upload',koaBody , async ctx => {
+/**
+ * The script to process a user uploading a file.
+ *
+ * @name Upload Scipt
+ * @route {POST} /upload
+ */
+
+router.post('/upload', koaBody, async ctx => {
 	try {
 		// extract the user
 		const user = ctx.session.user
-		
 		// call the functions in the module
-		const file = await new File()	
 		const {path,name} = ctx.request.files.upload
-		await file.saveFile(path, name, user)
+
+		const file = await new File(path, name, user)
+		await file.uploadFile()
 		// redirect to the home page
-		ctx.redirect(`/`)
+		ctx.redirect('/')
 	} catch(err) {
 		await ctx.render('error', {message: err.message})
 	}
