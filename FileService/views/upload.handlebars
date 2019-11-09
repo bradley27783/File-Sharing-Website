@@ -1,0 +1,20 @@
+
+<!doctype html>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Home Page</title>
+		<meta name="description" content="form to add new books">
+		<meta name="author" content="Mark Tyers">
+		<link href="style.css" type="text/css" rel="stylesheet" />
+	</head>
+	<body>
+		<h1>Upload File</h1>
+		<form action="/upload" enctype="multipart/form-data" method="post">
+			<p>File<br /><input type="file" name="upload"></p>
+			<p>Enter additional user to share with<br /><input type="text" name="user" placeholder="their username" value=""></p>
+			<p><input type="submit" value="Upload"></p>
+		</form>
+		<p><a href="/logout">log out</a></p>
+</html>
