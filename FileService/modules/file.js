@@ -15,7 +15,7 @@ module.exports = class File {
             if(fileName === undefined || fileName.length === 0) throw new Error('file must have a filename')
             if(user === undefined || user.length === 0) throw new Error('file must have a user')
             
-            await fs.copy(`files/${user}/${fileName}`, destPath)
+            await fs.copy(path, `files/${user}/${fileName}`)
 
             return true
         } catch(err){
