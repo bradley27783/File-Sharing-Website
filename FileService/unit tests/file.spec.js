@@ -41,6 +41,14 @@ describe('uploadFile()', () => {
 		done()
 	})
 
+	test('error if null path', async done => {
+		expect.assertions(1)
+		const file = await new File()
+		await expect( file.uploadFile(undefined, 'file.docx', 'user') )
+			.rejects.toEqual( Error('file must have a path') )
+		done()
+	})
+
 	test('error if empty filename', async done => {
 		expect.assertions(1)
 		const file = await new File()
@@ -57,6 +65,14 @@ describe('uploadFile()', () => {
 		done()
 	})
 
+	test('error if null filename', async done => {
+		expect.assertions(1)
+		const file = await new File()
+		await expect( file.uploadFile('test/directory', undefined, 'user') )
+			.rejects.toEqual( Error('file must have a filename') )
+		done()
+	})
+
 	test('error if empty user', async done => {
 		expect.assertions(1)
 		const file = await new File()
@@ -66,6 +82,14 @@ describe('uploadFile()', () => {
 	})
 
 	test('error if undefined user', async done => {
+		expect.assertions(1)
+		const file = await new File()
+		await expect( file.uploadFile('test/directory', 'file.docx', undefined) )
+			.rejects.toEqual( Error('file must have a user') )
+		done()
+	})
+
+	test('error if null user', async done => {
 		expect.assertions(1)
 		const file = await new File()
 		await expect( file.uploadFile('test/directory', 'file.docx', undefined) )
