@@ -10,9 +10,9 @@ const saltRounds = 10
 /**
  * Class that handles processing of files.
  * @class
+ * @name File
  */
 module.exports = class File {
-
 
 	/**
 	 * Saving an uploaded file
@@ -51,7 +51,7 @@ module.exports = class File {
 	/**
 	 * Checks if a filenname was passed. Otherwise throws error
 	 *
-	 * @param {String} fileName - Where the file exists
+	 * @param {String} fileName - The files name e.g. example.txt
 	 * @throws - file must have a filename
 	 */
 	checkFileName(fileName) {
@@ -63,7 +63,7 @@ module.exports = class File {
 	/**
 	 * Checks if a user was passed. Otherwise throws error
 	 *
-	 * @param {String} user - Where the file exists
+	 * @param {String} user - The user to store the file for
 	 * @throws - file must have a user
 	 */
 	checkUser(user) {
