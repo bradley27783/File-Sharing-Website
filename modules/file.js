@@ -7,9 +7,22 @@ const mime = require('mime-types')
 const sqlite = require('sqlite-async')
 const saltRounds = 10
 
-
+/**
+ * Class that handles processing of files.
+ * @class
+ */
 module.exports = class File {
 
+
+	/**
+	 * Saving an uploaded file
+	 *
+	 * @async
+	 * @param {String} path - Where the file exists
+	 * @param {String} fileName - The name of the file e.g. example.txt
+	 * @param {String} user - The username of the person uploading
+	 * @returns {boolean} - Returns true when the function completes
+	 */
 	async uploadFile(path, fileName, user) {
 		try {
 			this.checkPath(path)
@@ -24,16 +37,35 @@ module.exports = class File {
 		}
 	}
 
+	/**
+	 * Checks if a path was passed. Otherwise throws error
+	 *
+	 * @param {String} path - Where the file exists
+	 * @throws - file must have a path
+	 */
 	checkPath(path) {
 		if(path === undefined || path.length === 0 || path === null)
 			throw new Error('file must have a path')
 	}
 
+	/**
+	 * Checks if a filenname was passed. Otherwise throws error
+	 *
+	 * @param {String} fileName - Where the file exists
+	 * @throws - file must have a filename
+	 */
 	checkFileName(fileName) {
 		if(fileName === undefined || fileName.length === 0 || fileName === null)
 			throw new Error('file must have a filename')
 	}
 
+
+	/**
+	 * Checks if a user was passed. Otherwise throws error
+	 *
+	 * @param {String} user - Where the file exists
+	 * @throws - file must have a user
+	 */
 	checkUser(user) {
 		if(user === undefined || user.length === 0 || user === null)
 			throw new Error('file must have a user')
