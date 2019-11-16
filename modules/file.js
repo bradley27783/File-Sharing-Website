@@ -38,13 +38,50 @@ module.exports = class File {
 	}
 
 	/**
+	 * Downloading a file from server
+	 *
+	 * @async
+	 * @param {String} path - Where the file exists
+	 * @returns file - Returns a file read stream
+	 */
+
+	async downloadFile(filename, user) {
+		const path = `files/${user}/${filename}`
+		try {
+			this.checkFileName(filename)
+			this.checkUser(user)
+			await this.fileExists(path)
+
+			return await fs.createReadStream(path)
+		} catch (err) {
+			throw err
+		}
+	}
+
+
+	/**
+	 * Checks if a file exists on the server
+	 *
+	 * @async
+	 * @param {String} path - Where the file exists
+	 * @throws - Directory doesnt exist
+	 */
+	async fileExists(path) {
+		try {
+			await fs.access(path)
+		} catch (err) {
+			throw Error('file doesnt exist')
+		}
+	}
+
+	/**
 	 * Checks if a path was passed. Otherwise throws error
 	 *
 	 * @param {String} path - Where the file exists
 	 * @throws - file must have a path
 	 */
 	checkPath(path) {
-		if(path === undefined || path.length === 0 || path === null)
+		if(path === undefined || path === null || path.length === 0)
 			throw new Error('file must have a path')
 	}
 
@@ -55,7 +92,7 @@ module.exports = class File {
 	 * @throws - file must have a filename
 	 */
 	checkFileName(fileName) {
-		if(fileName === undefined || fileName.length === 0 || fileName === null)
+		if(fileName === undefined || fileName === null || fileName.length === 0)
 			throw new Error('file must have a filename')
 	}
 
@@ -67,7 +104,7 @@ module.exports = class File {
 	 * @throws - file must have a user
 	 */
 	checkUser(user) {
-		if(user === undefined || user.length === 0 || user === null)
+		if(user === undefined || user === null || user.length === 0)
 			throw new Error('file must have a user')
 	}
 }
