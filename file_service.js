@@ -37,13 +37,31 @@ const port = process.env.PORT || defaultPort
  * @route {GET} /
  * @authentication This route requires cookie-based authentication.
  */
-router.get('/', async ctx => {
+router.get('/', koaBody, async ctx => {
 	try {
 		//Sets authorised to true and username for testing
 		ctx.session.authorised = true
 		ctx.session.user = 'test'
+
 		await ctx.render('index')
 	} catch(err) {
+		await ctx.render('error', {message: err.message})
+	}
+})
+
+router.get('/download/:user/:filename', async ctx => {
+
+	try {
+		//Get parameters
+		const filename = ctx.params.filename
+		const user = ctx.params.user
+
+		const file = new File()
+
+		//Set body header and attachment to the file to force download
+		ctx.body = await file.downloadFile(filename, user)
+		ctx.attachment(filename)
+	} catch (err) {
 		await ctx.render('error', {message: err.message})
 	}
 })
@@ -80,8 +98,8 @@ router.post('/upload', koaBody, async ctx => {
 		// call the functions in the module
 		const {path,name} = ctx.request.files.upload
 
-		const file = await new File(path, name, user)
-		await file.uploadFile()
+		const file = await new File()
+		await file.uploadFile(path,name,user)
 		// redirect to the home page
 		ctx.redirect('/')
 	} catch(err) {

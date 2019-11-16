@@ -98,3 +98,90 @@ describe('uploadFile()', () => {
 	})
 
 })
+
+describe('downloadFile()', () => {
+
+	beforeEach(async() => {
+		mock({
+			'files/user/file.docx': 'File content'
+		})
+	})
+
+	afterEach(async() => {
+		afterEach(mock.restore)
+	})
+
+	test('error if non-existant user', async done => {
+		expect.assertions(1)
+		const file = await new File()
+		await expect( file.downloadFile('file.docx','fakeuser') )
+			.rejects.toEqual( Error('file doesnt exist') )
+		done()
+	})
+
+	test('error if undefined user', async done => {
+		expect.assertions(1)
+		const file = await new File()
+		await expect( file.downloadFile('file.docx',undefined) )
+			.rejects.toEqual( Error('file must have a user') )
+		done()
+	})
+
+	test('error if null user', async done => {
+		expect.assertions(1)
+		const file = await new File()
+		await expect( file.downloadFile('file.docx',null) )
+			.rejects.toEqual( Error('file must have a user') )
+		done()
+	})
+
+	test('error if empty user', async done => {
+		expect.assertions(1)
+		const file = await new File()
+		await expect( file.downloadFile('file.docx','') )
+			.rejects.toEqual( Error('file must have a user') )
+		done()
+	})
+
+
+	test('error if non-existant file', async done => {
+		expect.assertions(1)
+		const file = await new File()
+		await expect( file.downloadFile('fakefile.docx','user') )
+			.rejects.toEqual( Error('file doesnt exist') )
+		done()
+	})
+
+	test('error if undefined file', async done => {
+		expect.assertions(1)
+		const file = await new File()
+		await expect( file.downloadFile(undefined,'user') )
+			.rejects.toEqual( Error('file must have a filename') )
+		done()
+	})
+
+	test('error if null file', async done => {
+		expect.assertions(1)
+		const file = await new File()
+		await expect( file.downloadFile(null,'user') )
+			.rejects.toEqual( Error('file must have a filename') )
+		done()
+	})
+
+
+	test('error if empty file', async done => {
+		expect.assertions(1)
+		const file = await new File()
+		await expect( file.downloadFile('','user') )
+			.rejects.toEqual( Error('file must have a filename') )
+		done()
+	})
+
+	test('error if completely incorrect file and user', async done => {
+		expect.assertions(1)
+		const file = await new File()
+		await expect( file.downloadFile('nofile.void','voiduser') )
+			.rejects.toEqual( Error('file doesnt exist') )
+		done()
+	})
+})
