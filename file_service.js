@@ -29,6 +29,7 @@ app.use(views(`${__dirname}/views`, { extension: 'handlebars' }, {map: { handleb
 
 const defaultPort = 8080
 const port = process.env.PORT || defaultPort
+const dbname = 'file.db'
 
 /**
  * The secure home page.
@@ -96,10 +97,15 @@ router.post('/upload', koaBody, async ctx => {
 		// extract the user
 		const user = ctx.session.user
 		// call the functions in the module
-		const {path,name} = ctx.request.files.upload
+		const {path,name,size,type} = ctx.request.files.upload
+		console.log(ctx.request.files.upload)
 
-		const file = await new File()
-		await file.uploadFile(path,name,user)
+		const file = await new File(dbname)
+		file.init(name,user,size,type)
+
+		console.log(file)
+		await file.uploadFile(path)
+
 		// redirect to the home page
 		ctx.redirect('/')
 	} catch(err) {

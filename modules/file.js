@@ -14,6 +14,36 @@ const saltRounds = 10
  */
 module.exports = class File {
 
+	constructor(dbName) {
+
+		return (async() => {
+			this.db = await sqlite.open(dbName)
+			const sql = 'CREATE TABLE IF NOT EXISTS files(id INTEGER PRIMARY KEY AUTOINCREMENT,' +
+                'filename TEXT, directory TEXT, user TEXT, filesize INTEGER, timestamp TEXT)'
+			await this.db.run(sql)
+			return this
+		})()
+	}
+
+	async writeFile(file) {
+		try {
+			let sql = `SELECT * FROM files WHERE ITEM = "${file.getFilename()}" AND "${file.getUser()}"`
+			const data = await this.db.all(sql)
+			if(data.length === 0) {
+				sql = 'INSERT INTO files(filename, directory, user, filesize, timestamp)' +
+                    `VALUES("${file.getFilename()}", "${file.getDirectory()}","${file.getUser()}",`+
+                    `${file.getFilesize()}, "${file.getTimestamp()}",)`
+
+				await this.db.run(sql)
+			} else {
+				throw new Error('File already exists')
+			}
+
+		} catch(err) {
+			throw err
+		}
+	}
+
 	/**
 	 * Saving an uploaded file
 	 *
@@ -23,13 +53,10 @@ module.exports = class File {
 	 * @param {String} user - The username of the person uploading
 	 * @returns {boolean} - Returns true when the function completes
 	 */
-	async uploadFile(path, fileName, user) {
+	async uploadFile(path) {
 		try {
 			this.checkPath(path)
-			this.checkFileName(fileName)
-			this.checkUser(user)
-
-			await fs.copy(path, `files/${user}/${fileName}`)
+			await fs.copy(path, this.path)
 			return true
 
 		} catch(err) {
@@ -85,26 +112,91 @@ module.exports = class File {
 			throw new Error('file must have a path')
 	}
 
+	init(filename,user,filesize,filetype) {
+		try {
+			this.setFilename(filename)
+			this.setUser(user)
+			this.setFilesize(filesize)
+			this.setFiletype(filetype)
+			this.setDirectory()
+		} catch (err) {
+			throw err
+		}
+	}
+
 	/**
-	 * Checks if a filenname was passed. Otherwise throws error
+	 * Checks if a filename was passed.
+	 * If yes then stores it in this
+	 * If no then throws error
 	 *
 	 * @param {String} fileName - The files name e.g. example.txt
 	 * @throws - file must have a filename
 	 */
-	checkFileName(fileName) {
-		if(fileName === undefined || fileName === null || fileName.length === 0)
+
+	setFilename(filename) {
+		if(filename === undefined || filename === null || filename.length === 0)
 			throw new Error('file must have a filename')
+		else
+			this.filename = filename
 	}
 
 
 	/**
-	 * Checks if a user was passed. Otherwise throws error
+	 * Checks if a user was passed. 
+	 * If yes then stores it in this
+	 * If no then throws error
 	 *
 	 * @param {String} user - The user to store the file for
 	 * @throws - file must have a user
 	 */
-	checkUser(user) {
+
+	setUser(user) {
 		if(user === undefined || user === null || user.length === 0)
 			throw new Error('file must have a user')
+		else
+			this.user = user
+	}
+
+	setDirectory() {
+		this.path = `files/${this.user}/${this.filename}`
+	}
+
+	setFilesize(filesize) {
+		if(filesize === undefined || filesize === null || filesize.length === 0)
+			throw new Error('file must have a filesize')
+		else
+			this.filesize = filesize
+	}
+
+	setFiletype(filetype) {
+		if(filetype === undefined || filetype === null || filetype.length === 0)
+			throw new Error('file must have a filetype')
+		else
+			this.filetype = filetype
+	}
+
+	setTimestamp() {
+		throw new Error('build')
+	}
+
+
+	getFilename() {
+		throw new Error('build')
+	}
+
+	getUser() {
+		throw new Error('build')
+	}
+
+	getDirectory() {
+		throw new Error('build')
+	}
+
+	getFilesize() {
+		throw new Error('build')
+	}
+
+	getTimestamp() {
+		throw new Error('build')
 	}
 }
