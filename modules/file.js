@@ -106,6 +106,7 @@ module.exports = class File {
 			this.setFilesize(filesize)
 			this.setFiletype(filetype)
 			this.setDirectory()
+			this.setTimestamp()
 		} catch (err) {
 			throw err
 		}

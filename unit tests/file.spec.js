@@ -44,6 +44,20 @@ describe('setFilename()', () => {
 			done()
 		}
 	})
+
+	test('expect to set filename', async done => {
+		expect.assertions(1)
+		try {
+			const file = await new File()
+			file.setFilename('test.jpeg')
+
+			expect(file.getFilename()).toBe('test.jpeg')
+		} catch (err) {
+			done.fail('test failed')
+		} finally {
+			done()
+		}
+	})
 })
 
 describe('setUser()', () => {
@@ -86,6 +100,20 @@ describe('setUser()', () => {
 			done()
 		}
 	})
+
+	test('expect to set user', async done => {
+		expect.assertions(1)
+		try {
+			const file = await new File()
+			file.setUser('user')
+
+			expect(file.getUser()).toBe('user')
+		} catch (err) {
+			done.fail('test failed')
+		} finally {
+			done()
+		}
+	})
 })
 
 describe('setFilesize()', () => {
@@ -107,10 +135,10 @@ describe('setFilesize()', () => {
 		expect.assertions(1)
 		try {
 			const file = await new File()
-			file.setFilename(null)
+			file.setFilesize(null)
 			done.fail()
 		} catch (err) {
-			expect(err.message).toBe('file must have a filename')
+			expect(err.message).toBe('file must have a filesize')
 		} finally {
 			done()
 		}
@@ -124,6 +152,20 @@ describe('setFilesize()', () => {
 			done.fail()
 		} catch (err) {
 			expect(err.message).toBe('file must have a filesize')
+		} finally {
+			done()
+		}
+	})
+
+	test('expect to set filesize', async done => {
+		expect.assertions(1)
+		try {
+			const file = await new File()
+			file.setFilesize(1000)
+
+			expect(file.getFilesize()).toBe(1000)
+		} catch (err) {
+			done.fail('test failed')
 		} finally {
 			done()
 		}
@@ -170,9 +212,133 @@ describe('setFiletype()', () => {
 			done()
 		}
 	})
+
+	test('expect to set filetype', async done => {
+		expect.assertions(1)
+		try {
+			const file = await new File()
+			file.setFiletype('image/jpeg')
+
+			expect(file.getFiletype()).toBe('image/jpeg')
+		} catch (err) {
+			done.fail('test failed')
+		} finally {
+			done()
+		}
+	})
+})
+
+
+describe('setTimestamp()', () => {
+
+	test('expect to set timestamp', async done => {
+		expect.assertions(1)
+		try {
+			const file = await new File()
+			file.setTimestamp()
+			const date = new Date()
+			const checkDate = `${date.getUTCDate()}/${date.getUTCMonth()+1}/${date.getUTCFullYear()}`
+
+			expect(file.getTimestamp()).toEqual(checkDate)
+		} catch (err) {
+			done.fail()
+		} finally {
+			done()
+		}
+	})
 })
 
 describe('setDirectory()', () => {
+
+	test('throw error if filename undefined', async done => {
+		expect.assertions(1)
+		try {
+			const file = await new File()
+			file.filename = undefined
+			file.user = 'user'
+			file.setDirectory()
+			done.fail()
+		} catch (err) {
+			expect(err.message).toBe('file does not have a filename')
+		} finally {
+			done()
+		}
+	})
+
+	test('throw error if filename null', async done => {
+		expect.assertions(1)
+		try {
+			const file = await new File()
+			file.filename = null
+			file.user = 'user'
+			file.setDirectory()
+			done.fail()
+		} catch (err) {
+			expect(err.message).toBe('file does not have a filename')
+		} finally {
+			done()
+		}
+	})
+
+	test('throw error if filename empty', async done => {
+		expect.assertions(1)
+		try {
+			const file = await new File()
+			file.filename = ''
+			file.user = 'user'
+			file.setDirectory()
+			done.fail()
+		} catch (err) {
+			expect(err.message).toBe('file does not have a filename')
+		} finally {
+			done()
+		}
+	})
+
+	test('throw error if user undefined', async done => {
+		expect.assertions(1)
+		try {
+			const file = await new File()
+			file.filename = 'test.jpeg'
+			file.user = undefined
+			file.setDirectory()
+			done.fail()
+		} catch (err) {
+			expect(err.message).toBe('file does not have a user')
+		} finally {
+			done()
+		}
+	})
+
+	test('throw error if user null', async done => {
+		expect.assertions(1)
+		try {
+			const file = await new File()
+			file.filename = 'test.jpeg'
+			file.user = null
+			file.setDirectory()
+			done.fail()
+		} catch (err) {
+			expect(err.message).toBe('file does not have a user')
+		} finally {
+			done()
+		}
+	})
+
+	test('throw error if user empty', async done => {
+		expect.assertions(1)
+		try {
+			const file = await new File()
+			file.filename = 'test.jpeg'
+			file.user = ''
+			file.setDirectory()
+			done.fail()
+		} catch (err) {
+			expect(err.message).toBe('file does not have a user')
+		} finally {
+			done()
+		}
+	})
 
 	test('expect to create correct directory', async done => {
 		expect.assertions(1)
@@ -181,7 +347,250 @@ describe('setDirectory()', () => {
 			file.setFilename('test.jpeg')
 			file.setUser('user')
 			file.setDirectory()
-			expect(file.path).toBe('files/user/test.jpeg')
+			expect(file.getDirectory()).toBe('files/user/test.jpeg')
+		} catch (err) {
+			done.fail('test failed')
+		} finally {
+			done()
+		}
+	})
+})
+
+describe('init()', () => {
+	test('throw error if filename undefined', async done => {
+		expect.assertions(1)
+		try {
+			const file = await new File()
+			file.init(undefined,'user',1000,'image/jpeg')
+			done.fail()
+		} catch (err) {
+			expect(err.message).toBe('file must have a filename')
+		} finally {
+			done()
+		}
+	})
+
+	test('throw error if filename null', async done => {
+		expect.assertions(1)
+		try {
+			const file = await new File()
+			file.init(null,'user',1000,'image/jpeg')
+			done.fail()
+		} catch (err) {
+			expect(err.message).toBe('file must have a filename')
+		} finally {
+			done()
+		}
+	})
+
+	test('throw error if filename empty', async done => {
+		expect.assertions(1)
+		try {
+			const file = await new File()
+			file.init('','user',1000,'image/jpeg')
+			done.fail()
+		} catch (err) {
+			expect(err.message).toBe('file must have a filename')
+		} finally {
+			done()
+		}
+	})
+
+	test('expect to set filename', async done => {
+		expect.assertions(1)
+		try {
+			const file = await new File()
+			file.init('test.jpeg','user',1000,'image/jpeg')
+
+			expect(file.getFilename()).toBe('test.jpeg')
+		} catch (err) {
+			done.fail('test failed')
+		} finally {
+			done()
+		}
+	})
+
+	test('throw error if user undefined', async done => {
+		expect.assertions(1)
+		try {
+			const file = await new File()
+			file.init('test.jpeg',undefined,1000,'image/jpeg')
+			done.fail()
+		} catch (err) {
+			expect(err.message).toBe('file must have a user')
+		} finally {
+			done()
+		}
+	})
+
+	test('throw error if user null', async done => {
+		expect.assertions(1)
+		try {
+			const file = await new File()
+			file.init('test.jpeg',null,1000,'image/jpeg')
+			done.fail()
+		} catch (err) {
+			expect(err.message).toBe('file must have a user')
+		} finally {
+			done()
+		}
+	})
+
+	test('throw error if user empty', async done => {
+		expect.assertions(1)
+		try {
+			const file = await new File()
+			file.init('test.jpeg','',1000,'image/jpeg')
+			done.fail()
+		} catch (err) {
+			expect(err.message).toBe('file must have a user')
+		} finally {
+			done()
+		}
+	})
+
+	test('expect to set user', async done => {
+		expect.assertions(1)
+		try {
+			const file = await new File()
+			file.init('test.jpeg','user',1000,'image/jpeg')
+
+			expect(file.getUser()).toBe('user')
+		} catch (err) {
+			done.fail('test failed')
+		} finally {
+			done()
+		}
+	})
+
+	test('throw error if filesize undefined', async done => {
+		expect.assertions(1)
+		try {
+			const file = await new File()
+			file.init('test.jpeg','user',undefined,'image/jpeg')
+			done.fail()
+		} catch (err) {
+			expect(err.message).toBe('file must have a filesize')
+		} finally {
+			done()
+		}
+	})
+
+	test('throw error if filesize null', async done => {
+		expect.assertions(1)
+		try {
+			const file = await new File()
+			file.init('test.jpeg','user',null,'image/jpeg')
+			done.fail()
+		} catch (err) {
+			expect(err.message).toBe('file must have a filesize')
+		} finally {
+			done()
+		}
+	})
+
+	test('throw error if filesize empty', async done => {
+		expect.assertions(1)
+		try {
+			const file = await new File()
+			file.init('test.jpeg','user',0,'image/jpeg')
+			done.fail()
+		} catch (err) {
+			expect(err.message).toBe('file must have a filesize')
+		} finally {
+			done()
+		}
+	})
+
+	test('expect to set filesize', async done => {
+		expect.assertions(1)
+		try {
+			const file = await new File()
+			file.init('test.jpeg','user',1000,'image/jpeg')
+
+			expect(file.getFilesize()).toBe(1000)
+		} catch (err) {
+			done.fail('test failed')
+		} finally {
+			done()
+		}
+	})
+
+	test('throw error if filetype undefined', async done => {
+		expect.assertions(1)
+		try {
+			const file = await new File()
+			file.init('test.jpeg','user',1000,undefined)
+			done.fail()
+		} catch (err) {
+			expect(err.message).toBe('file must have a filetype')
+		} finally {
+			done()
+		}
+	})
+
+	test('throw error if filetype null', async done => {
+		expect.assertions(1)
+		try {
+			const file = await new File()
+			file.init('test.jpeg','user',1000,null)
+			done.fail()
+		} catch (err) {
+			expect(err.message).toBe('file must have a filetype')
+		} finally {
+			done()
+		}
+	})
+
+	test('throw error if filetype empty', async done => {
+		expect.assertions(1)
+		try {
+			const file = await new File()
+			file.init('test.jpeg','user',1000,'')
+			done.fail()
+		} catch (err) {
+			expect(err.message).toBe('file must have a filetype')
+		} finally {
+			done()
+		}
+	})
+
+	test('expect to set filetype', async done => {
+		expect.assertions(1)
+		try {
+			const file = await new File()
+			file.init('test.jpeg','user',1000,'image/jpeg')
+
+			expect(file.getFiletype()).toBe('image/jpeg')
+		} catch (err) {
+			done.fail('test failed')
+		} finally {
+			done()
+		}
+	})
+	test('expect to set path', async done => {
+		expect.assertions(1)
+		try {
+			const file = await new File()
+			file.init('test.jpeg','user',1000,'image/jpeg')
+
+			expect(file.getDirectory()).toBe('files/user/test.jpeg')
+		} catch (err) {
+			done.fail('test failed')
+		} finally {
+			done()
+		}
+	})
+
+	test('expect to set timestamp', async done => {
+		expect.assertions(1)
+		try {
+			const file = await new File()
+			file.init('test.jpeg','user',1000,'image/jpeg')
+			const date = new Date()
+			const checkDate = `${date.getUTCDate()}/${date.getUTCMonth()+1}/${date.getUTCFullYear()}`
+
+			expect(file.getTimestamp()).toEqual(checkDate)
 		} catch (err) {
 			done.fail('test failed')
 		} finally {
