@@ -7,7 +7,8 @@ const mime = require('mime-types')
 const sqlite = require('sqlite-async')
 const saltRounds = 10
 
-const File = require('./file.js')
+const File = require('./file')
+const FilePersistance = require('./FilePersistance')
 
 /**
  * Class that handles processing of files.
@@ -16,15 +17,8 @@ const File = require('./file.js')
  */
 module.exports = class FileController {
 
-	constructor(dbName = ':memory:') {
-
-		return (async() => {
-			this.db = await sqlite.open(dbName)
-			const sql = 'CREATE TABLE IF NOT EXISTS files(id INTEGER PRIMARY KEY AUTOINCREMENT,' +
-                'filename TEXT, directory TEXT, user TEXT, filesize INTEGER, timestamp TEXT)'
-			await this.db.run(sql)
-			return this
-		})()
+	constructor(dbname) {
+		this.dbname = dbname
 	}
 
 	/**
@@ -34,6 +28,8 @@ module.exports = class FileController {
 	 * @param {String} path - Where the file exists
 	 * @param {String} fileName - The name of the file e.g. example.txt
 	 * @param {String} user - The username of the person uploading
+	 * @param {Integer} filesize - The size of the file uploaded in bytes
+	 * @param {String} filetype - The filetype of the file e.g. image/jpeg
 	 * @returns {boolean} - Returns true when the function completes
 	 */
 	async uploadFile(path,filename,user,filesize,filetype) {
@@ -43,6 +39,9 @@ module.exports = class FileController {
 
 			const file = await new File()
 			file.init(filename,user,filesize,filetype)
+
+			const persist = await new FilePersistance(this.dbname)
+			await persist.writeFile(file)
 
 			await fs.copy(path, file.getDirectory())
 			return true
@@ -68,23 +67,4 @@ module.exports = class FileController {
 			throw err
 		}
 	}
-	/*
-	async writeFile(file) {
-		try {
-			let sql = `SELECT * FROM files WHERE ITEM = "${file.getFilename()}" AND "${file.getUser()}"`
-			const data = await this.db.all(sql)
-			if(data.length === 0) {
-				sql = 'INSERT INTO files(filename, directory, user, filesize, timestamp)' +
-                    `VALUES("${file.getFilename()}", "${file.getDirectory()}","${file.getUser()}",`+
-                    `${file.getFilesize()}, "${file.getTimestamp()}",)`
-
-				await this.db.run(sql)
-			} else {
-				throw new Error('File already exists')
-			}
-
-		} catch(err) {
-			throw err
-		}
-	}*/
 }

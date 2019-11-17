@@ -14,7 +14,7 @@ const koaBody = require('koa-body')({multipart: true, uploadDir: '.'})
 const session = require('koa-session')
 
 /* IMPORT CUSTOM MODULES */
-const File = require('./modules/file')
+const FileController = require('./modules/FileController')
 
 
 const app = new Koa()
@@ -100,11 +100,8 @@ router.post('/upload', koaBody, async ctx => {
 		const {path,name,size,type} = ctx.request.files.upload
 		console.log(ctx.request.files.upload)
 
-		const file = await new File(dbname)
-		file.init(name,user,size,type)
-
-		console.log(file)
-		await file.uploadFile(path)
+		const control = await new FileController(dbname)
+		await control.uploadFile(path,name,user,size,type)
 
 		// redirect to the home page
 		ctx.redirect('/')
