@@ -7,14 +7,13 @@ const mime = require('mime-types')
 const sqlite = require('sqlite-async')
 const saltRounds = 10
 
-const File = require('./file.js')
 
 /**
  * Class that handles processing of files.
  * @class
- * @name FileController
+ * @name FilePersistance
  */
-module.exports = class FileController {
+module.exports = class FilePersistance {
 
 	constructor(dbName = ':memory:') {
 
@@ -26,6 +25,14 @@ module.exports = class FileController {
 			return this
 		})()
 	}
+
+	/**
+	 * Storing file in the db
+	 *
+	 * @async
+	 * @param {File} file - File object that was uploaded
+	 * @returns {boolean} - Returns true when the function completes
+	 */
 
 	async writeFile(file) {
 		try {
