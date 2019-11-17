@@ -61,7 +61,8 @@ module.exports = class FileController {
 
 	async downloadFile(path) {
 		try {
-			//Need to check if file exists here
+			const persist = await new FilePersistance(this.dbname)
+			await persist.readFile(path)
 			return await fs.createReadStream(path)
 		} catch (err) {
 			throw err

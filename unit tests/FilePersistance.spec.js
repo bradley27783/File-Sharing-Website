@@ -31,3 +31,38 @@ describe('writeFile()', () => {
 		done()
 	})
 })
+
+describe('readFile()', () => {
+
+	test('successfully read file', async done => {
+		expect.assertions(1)
+
+		//ARRANGE
+		const persist = await new FilePersistance()
+		const file = await new File()
+		file.init('test.jpeg','user',1000,'image/jpeg')
+		await persist.writeFile(file)
+		const path = file.getDirectory()
+
+		//ASSERT
+		await expect( persist.readFile(path) )
+			.resolve.toEqual( 'something' )
+		done()
+	})
+
+	test('throw error if file does not exists', async done => {
+		expect.assertions(1)
+
+		//ARRANGE
+		const persist = await new FilePersistance()
+		const file = await new File()
+		file.init('test.jpeg','user',1000,'image/jpeg')
+		//await persist.writeFile(file)
+		const path = file.getDirectory()
+
+		//ASSERT
+		await expect( persist.readFile(path) )
+			.rejects.toEqual( Error('File does not exist') )
+		done()
+	})
+})

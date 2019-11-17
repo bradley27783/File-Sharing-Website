@@ -53,4 +53,18 @@ module.exports = class FilePersistance {
 			throw err
 		}
 	}
+
+
+	async readFile(directory) {
+		try {
+			const sql = `SELECT * FROM files WHERE directory = "${directory}"`
+			const data = await this.db.all(sql)
+			if(data === undefined || data === null || data.length === 0) {
+				throw new Error('File does not exist')
+			}
+			return data
+		} catch(err) {
+			throw err
+		}
+	}
 }
