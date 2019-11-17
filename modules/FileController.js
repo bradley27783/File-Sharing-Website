@@ -59,15 +59,15 @@ module.exports = class FileController {
 	 * @param {String} path - Where the file exists
 	 * @returns file - Returns a file read stream
 	 */
-	/*
-	async downloadFile() {
+
+	async downloadFile(path) {
 		try {
-			this.fileExists(this.path)
-			return await fs.createReadStream(this.path)
+			//Need to check if file exists here
+			return await fs.createReadStream(path)
 		} catch (err) {
 			throw err
 		}
-	}*/
+	}
 	/*
 	async writeFile(file) {
 		try {
