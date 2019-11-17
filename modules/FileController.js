@@ -7,12 +7,14 @@ const mime = require('mime-types')
 const sqlite = require('sqlite-async')
 const saltRounds = 10
 
+const File = require('./file.js')
+
 /**
  * Class that handles processing of files.
  * @class
- * @name File
+ * @name FileController
  */
-module.exports = class File {
+module.exports = class FileController {
 
 	constructor(dbName = ':memory:') {
 
@@ -25,6 +27,48 @@ module.exports = class File {
 		})()
 	}
 
+	/**
+	 * Saving an uploaded file
+	 *
+	 * @async
+	 * @param {String} path - Where the file exists
+	 * @param {String} fileName - The name of the file e.g. example.txt
+	 * @param {String} user - The username of the person uploading
+	 * @returns {boolean} - Returns true when the function completes
+	 */
+	async uploadFile(path,filename,user,filesize,filetype) {
+		try {
+			if(path === undefined || path === null || path.length === 0)
+				throw new Error('Could not locate uploaded files source path')
+
+			const file = await new File()
+			file.init(filename,user,filesize,filetype)
+
+			await fs.copy(path, file.getDirectory())
+			return true
+
+		} catch(err) {
+			throw err
+		}
+	}
+
+	/**
+	 * Downloading a file from server
+	 *
+	 * @async
+	 * @param {String} path - Where the file exists
+	 * @returns file - Returns a file read stream
+	 */
+	/*
+	async downloadFile() {
+		try {
+			this.fileExists(this.path)
+			return await fs.createReadStream(this.path)
+		} catch (err) {
+			throw err
+		}
+	}*/
+	/*
 	async writeFile(file) {
 		try {
 			let sql = `SELECT * FROM files WHERE ITEM = "${file.getFilename()}" AND "${file.getUser()}"`
@@ -42,43 +86,5 @@ module.exports = class File {
 		} catch(err) {
 			throw err
 		}
-	}
-
-	/**
-	 * Saving an uploaded file
-	 *
-	 * @async
-	 * @param {String} path - Where the file exists
-	 * @param {String} fileName - The name of the file e.g. example.txt
-	 * @param {String} user - The username of the person uploading
-	 * @returns {boolean} - Returns true when the function completes
-	 */
-	async uploadFile(path) {
-		try {
-			if(path === undefined || path === null || path.length === 0)
-				throw new Error('Could not locate uploaded files source path')
-			await fs.copy(path, this.path)
-			return true
-
-		} catch(err) {
-			throw err
-		}
-	}
-
-	/**
-	 * Downloading a file from server
-	 *
-	 * @async
-	 * @param {String} path - Where the file exists
-	 * @returns file - Returns a file read stream
-	 */
-
-	async downloadFile() {
-		try {
-			this.fileExists(this.path)
-			return await fs.createReadStream(this.path)
-		} catch (err) {
-			throw err
-		}
-	}
+	}*/
 }
