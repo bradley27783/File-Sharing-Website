@@ -44,11 +44,9 @@ describe('readFile()', () => {
 	test('throw error if file does not exists', async done => {
 		expect.assertions(1)
 
-		//ARRANGE
 		const persist = await new FilePersistance()
 		persist.writeFile('test.jpeg','user',1000,'image/jpeg')
 
-		//ASSERT
 		await expect( persist.readFile('files/user/test.jpeg') )
 			.rejects.toEqual( Error('File does not exist') )
 		done()
