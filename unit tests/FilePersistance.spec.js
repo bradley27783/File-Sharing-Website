@@ -9,11 +9,8 @@ describe('writeFile()', () => {
 		expect.assertions(1)
 		const persist = await new FilePersistance()
 
-		const file = await new File()
-		file.init('test.jpeg','user',1000,'image/jpeg')
-
-		const write = await persist.writeFile(file)
-		expect(write).toBe(true)
+		const val = await persist.writeFile('test.jpeg','user',1000,'image/jpeg')
+		expect(val).toBe(true)
 		done()
 	})
 
@@ -21,12 +18,9 @@ describe('writeFile()', () => {
 		expect.assertions(1)
 		const persist = await new FilePersistance()
 
-		const file = await new File()
-		file.init('test.jpeg','user',1000,'image/jpeg')
+		await persist.writeFile('test.jpeg','user',1000,'image/jpeg')
 
-		await persist.writeFile(file)
-
-		await expect( persist.writeFile(file) )
+		await expect( persist.writeFile('test.jpeg','user',1000,'image/jpeg') )
 			.rejects.toEqual( Error('File already exists') )
 		done()
 	})
@@ -39,14 +33,11 @@ describe('readFile()', () => {
 
 		//ARRANGE
 		const persist = await new FilePersistance()
-		const file = await new File()
-		file.init('test.jpeg','user',1000,'image/jpeg')
-		await persist.writeFile(file)
-		const path = file.getDirectory()
+		await persist.writeFile('test.jpeg','user',1000,'image/jpeg')
 
 		//ASSERT
-		await expect( persist.readFile(path) )
-			.resolve.toEqual( 'something' )
+		await expect( await persist.readFile('files/user/test.jpeg') )
+			.toMatchObject( {'directory': 'files/user/test.jpeg'} )
 		done()
 	})
 
@@ -55,13 +46,10 @@ describe('readFile()', () => {
 
 		//ARRANGE
 		const persist = await new FilePersistance()
-		const file = await new File()
-		file.init('test.jpeg','user',1000,'image/jpeg')
-		//await persist.writeFile(file)
-		const path = file.getDirectory()
+		persist.writeFile('test.jpeg','user',1000,'image/jpeg')
 
 		//ASSERT
-		await expect( persist.readFile(path) )
+		await expect( persist.readFile('files/user/test.jpeg') )
 			.rejects.toEqual( Error('File does not exist') )
 		done()
 	})

@@ -8,7 +8,6 @@ const sqlite = require('sqlite-async')
 const saltRounds = 10
 
 const File = require('./file')
-const FilePersistance = require('./FilePersistance')
 
 /**
  * Class that handles processing of files.
@@ -40,9 +39,6 @@ module.exports = class FileController {
 			const file = await new File()
 			file.init(filename,user,filesize,filetype)
 
-			const persist = await new FilePersistance(this.dbname)
-			await persist.writeFile(file)
-
 			await fs.copy(path, file.getDirectory())
 			return true
 
@@ -61,8 +57,6 @@ module.exports = class FileController {
 
 	async downloadFile(path) {
 		try {
-			const persist = await new FilePersistance(this.dbname)
-			await persist.readFile(path)
 			return await fs.createReadStream(path)
 		} catch (err) {
 			throw err

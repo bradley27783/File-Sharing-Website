@@ -7,6 +7,8 @@ const mime = require('mime-types')
 const sqlite = require('sqlite-async')
 const saltRounds = 10
 
+const File = require('./file')
+
 
 /**
  * Class that handles processing of files.
@@ -34,8 +36,11 @@ module.exports = class FilePersistance {
 	 * @returns {boolean} - Returns true when the function completes
 	 */
 
-	async writeFile(file) {
+	async writeFile(path,name,user,size,type) {
 		try {
+			const file = await new File()
+			file.init(path,name,user,size,type)
+
 			let sql = `SELECT * FROM files WHERE filename = "${file.getFilename()}" AND user = "${file.getUser()}"`
 			const data = await this.db.all(sql)
 			if(data.length === 0) {
@@ -45,10 +50,7 @@ module.exports = class FilePersistance {
 
 				await this.db.run(sql)
 				return true
-			} else {
-				throw new Error('File already exists')
-			}
-
+			} else throw new Error('File already exists')
 		} catch(err) {
 			throw err
 		}
@@ -58,7 +60,7 @@ module.exports = class FilePersistance {
 	async readFile(directory) {
 		try {
 			const sql = `SELECT * FROM files WHERE directory = "${directory}"`
-			const data = await this.db.all(sql)
+			const data = await this.db.get(sql)
 			if(data === undefined || data === null || data.length === 0) {
 				throw new Error('File does not exist')
 			}

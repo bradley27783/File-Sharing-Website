@@ -15,6 +15,7 @@ const session = require('koa-session')
 
 /* IMPORT CUSTOM MODULES */
 const FileController = require('./modules/FileController')
+const FilePersistance = require('./modules/FilePersistance')
 
 
 const app = new Koa()
@@ -57,8 +58,10 @@ router.get('/download/:user/:filename', async ctx => {
 		const filename = ctx.params.filename
 		const user = ctx.params.user
 
-		const file = new File()
+		const control = new FileController()
+		const persist = await new FilePersistance(this.dbname)
 
+		await persist.readFile(path)
 		//Set body header and attachment to the file to force download
 		ctx.body = await file.downloadFile(filename, user)
 		ctx.attachment(filename)
@@ -100,8 +103,11 @@ router.post('/upload', koaBody, async ctx => {
 		const {path,name,size,type} = ctx.request.files.upload
 		console.log(ctx.request.files.upload)
 
-		const control = await new FileController(dbname)
+		const control = await new FileController()
+		const persist = await new FilePersistance(this.dbname)
+
 		await control.uploadFile(path,name,user,size,type)
+		await persist.writeFile(path,name,user,size,type)
 
 		// redirect to the home page
 		ctx.redirect('/')
