@@ -37,11 +37,10 @@ module.exports = class FileController {
 				throw new Error('Could not locate uploaded files source path')
 
 			const file = await new File()
-			file.init(filename,user,filesize,filetype)
+			await file.init(filename,user,filesize,filetype)
 
 			await fs.copy(path, file.getDirectory())
 			return true
-
 		} catch(err) {
 			throw err
 		}
@@ -56,10 +55,6 @@ module.exports = class FileController {
 	 */
 
 	async downloadFile(path) {
-		try {
-			return await fs.createReadStream(path)
-		} catch (err) {
-			throw err
-		}
+		return await fs.createReadStream(path)
 	}
 }

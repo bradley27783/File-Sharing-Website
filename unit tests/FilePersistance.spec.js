@@ -1,6 +1,7 @@
 'use strict'
 
 const FilePersistance = require('../modules/FilePersistance.js')
+const bcrypt = require('bcrypt-promise')
 
 describe('writeFile()', () => {
 
@@ -8,8 +9,8 @@ describe('writeFile()', () => {
 		expect.assertions(1)
 		const persist = await new FilePersistance()
 
-		const val = await persist.writeFile('test.jpeg','user',1000,'image/jpeg')
-		expect(val).toBe(true)
+		const val = await persist.writeFile('test.jpeg', 'user', 1000, 'image/jpeg')
+		expect(val).toMatchObject({'filename': 'test.jpeg'})
 		done()
 	})
 
@@ -17,7 +18,7 @@ describe('writeFile()', () => {
 		expect.assertions(1)
 		const persist = await new FilePersistance()
 
-		await persist.writeFile('test.jpeg','user',1000,'image/jpeg')
+		await persist.writeFile('test.jpeg', 'user', 1000, 'image/jpeg')
 
 		await expect( persist.writeFile('test.jpeg','user',1000,'image/jpeg') )
 			.rejects.toEqual( Error('File already exists') )
@@ -31,9 +32,10 @@ describe('readFile()', () => {
 		expect.assertions(1)
 
 		const persist = await new FilePersistance()
-		await persist.writeFile('test.jpeg','user',1000,'image/jpeg')
 
-		await expect( persist.readFile('files/user/test.jpeg') )
+		const file = await persist.writeFile('test.jpeg', 'user', 1000, 'image/jpeg')
+
+		await expect( persist.readFile(file.getHashedName(),'user') )
 			.resolves.toMatchObject( {'directory': 'files/user/test.jpeg'} )
 		done()
 	})
@@ -42,7 +44,7 @@ describe('readFile()', () => {
 		expect.assertions(1)
 
 		const persist = await new FilePersistance()
-		persist.writeFile('test.jpeg','user',1000,'image/jpeg')
+		await persist.writeFile('test.jpeg','user',1000,'image/jpeg')
 
 		await expect( persist.readFile('files/user/test.jpeg') )
 			.rejects.toEqual( Error('File does not exist') )

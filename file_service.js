@@ -45,7 +45,7 @@ router.get('/', koaBody, async ctx => {
 		ctx.session.authorised = true
 		ctx.session.user = 'test'
 
-		await ctx.render('index')
+		await ctx.render('index', {test: '%242b%2410%24zTtZP%2FWJuxxpc04bgg7LreKqvYJC4dMDj43zxC.FcjhECoIaWWDpW'})
 	} catch(err) {
 		await ctx.render('error', {message: err.message})
 	}
@@ -55,16 +55,17 @@ router.get('/download/:user/:filename', async ctx => {
 
 	try {
 		//Get parameters
-		const filename = ctx.params.filename
+		//Encode this because the hash in the db is url encoded
+		const filename = encodeURIComponent(ctx.params.filename)
 		const user = ctx.params.user
-		const path = `files/${user}/${filename}`
+		console.log(filename)
 
 		const control = await new FileController()
 		const persist = await new FilePersistance(dbname)
-		const data = await persist.readFile(path)
+		const data = await persist.readFile(filename,user)
 		//Set body header and attachment to the file to force download
 		ctx.body = await control.downloadFile(data.directory)
-		ctx.attachment(filename)
+		ctx.attachment(data.filename)
 	} catch (err) {
 		await ctx.render('error', {message: err.message})
 	}
