@@ -57,13 +57,13 @@ router.get('/download/:user/:filename', async ctx => {
 		//Get parameters
 		const filename = ctx.params.filename
 		const user = ctx.params.user
+		const path = `files/${user}/${filename}`
 
-		const control = new FileController()
-		const persist = await new FilePersistance(this.dbname)
-
-		await persist.readFile(path)
+		const control = await new FileController()
+		const persist = await new FilePersistance(dbname)
+		const data = await persist.readFile(path)
 		//Set body header and attachment to the file to force download
-		ctx.body = await file.downloadFile(filename, user)
+		ctx.body = await control.downloadFile(data.directory)
 		ctx.attachment(filename)
 	} catch (err) {
 		await ctx.render('error', {message: err.message})
@@ -104,10 +104,10 @@ router.post('/upload', koaBody, async ctx => {
 		console.log(ctx.request.files.upload)
 
 		const control = await new FileController()
-		const persist = await new FilePersistance(this.dbname)
+		const persist = await new FilePersistance(dbname)
 
 		await control.uploadFile(path,name,user,size,type)
-		await persist.writeFile(path,name,user,size,type)
+		await persist.writeFile(name,user,size,type)
 
 		// redirect to the home page
 		ctx.redirect('/')

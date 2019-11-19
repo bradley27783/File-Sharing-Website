@@ -36,13 +36,13 @@ module.exports = class FilePersistance {
 	 * @returns {boolean} - Returns true when the function completes
 	 */
 
-	async writeFile(path,name,user,size,type) {
+	async writeFile(name,user,size,type) {
 		try {
 			const file = await new File()
-			file.init(path,name,user,size,type)
-
+			file.init(name,user,size,type)
 			let sql = `SELECT * FROM files WHERE filename = "${file.getFilename()}" AND user = "${file.getUser()}"`
 			const data = await this.db.all(sql)
+
 			if(data.length === 0) {
 				sql = 'INSERT INTO files(filename, directory, user, filesize, timestamp)' +
                     `VALUES("${file.getFilename()}", "${file.getDirectory()}","${file.getUser()}",`+
