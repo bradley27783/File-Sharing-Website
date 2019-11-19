@@ -22,7 +22,7 @@ module.exports = class FilePersistance {
 		return (async() => {
 			this.db = await sqlite.open(dbName)
 			const sql = 'CREATE TABLE IF NOT EXISTS files(id INTEGER PRIMARY KEY AUTOINCREMENT,' +
-                'filename TEXT, directory TEXT, user TEXT, filesize INTEGER, timestamp TEXT)'
+                'filename TEXT, directory TEXT, user TEXT, filesize INTEGER, timestamp TEXT, hashedname TEXT)'
 			await this.db.run(sql)
 			return this
 		})()
@@ -39,17 +39,17 @@ module.exports = class FilePersistance {
 	async writeFile(name,user,size,type) {
 		try {
 			const file = await new File()
-			file.init(name,user,size,type)
+			await file.init(name,user,size,type)
 			let sql = `SELECT * FROM files WHERE filename = "${file.getFilename()}" AND user = "${file.getUser()}"`
 			const data = await this.db.all(sql)
 
 			if(data.length === 0) {
-				sql = 'INSERT INTO files(filename, directory, user, filesize, timestamp)' +
+				sql = 'INSERT INTO files(filename, directory, user, filesize, timestamp, hashedname)' +
                     `VALUES("${file.getFilename()}", "${file.getDirectory()}","${file.getUser()}",`+
-                    `${file.getFilesize()}, "${file.getTimestamp()}");`
+                    `${file.getFilesize()}, "${file.getTimestamp()}", "${file.getHashedName()}");`
 
 				await this.db.run(sql)
-				return true
+				return file
 			} else throw new Error('File already exists')
 		} catch(err) {
 			throw err
@@ -57,9 +57,9 @@ module.exports = class FilePersistance {
 	}
 
 
-	async readFile(directory) {
+	async readFile(filename,user) {
 		try {
-			const sql = `SELECT * FROM files WHERE directory = "${directory}"`
+			const sql = `SELECT * FROM files WHERE hashedname = "${filename}" AND user = "${user}"`
 			const data = await this.db.get(sql)
 			if(data === undefined || data === null || data.length === 0) {
 				throw new Error('File does not exist')

@@ -14,7 +14,7 @@ const saltRounds = 10
  */
 module.exports = class File {
 
-	init(filename,user,filesize,filetype) {
+	async init(filename,user,filesize,filetype) {
 		try {
 			this.setFilename(filename)
 			this.setUser(user)
@@ -22,6 +22,7 @@ module.exports = class File {
 			this.setFiletype(filetype)
 			this.setDirectory()
 			this.setTimestamp()
+			await this.setHashedName()
 		} catch (err) {
 			throw err
 		}
@@ -39,8 +40,15 @@ module.exports = class File {
 	setFilename(filename) {
 		if(filename === undefined || filename === null || filename.length === 0)
 			throw new Error('file must have a filename')
-		else
+		else {
 			this.filename = filename
+		}
+	}
+
+	async setHashedName() {
+		const hashedName = await bcrypt.hash(this.filename, saltRounds)
+		const hashedNameUTF8 = encodeURIComponent(hashedName)
+		this.hashedName = hashedNameUTF8
 	}
 
 
@@ -154,6 +162,17 @@ module.exports = class File {
 			if(timestamp === undefined || timestamp === null || timestamp.length === 0)
 				throw new Error('file does not have a timestamp')
 			return timestamp
+		} catch (err) {
+			throw err
+		}
+	}
+
+	getHashedName() {
+		try {
+			const hashedName = this.hashedName
+			if(hashedName === undefined || hashedName === null || hashedName.length === 0)
+				throw new Error('file does not have a hashed filename')
+			return hashedName
 		} catch (err) {
 			throw err
 		}

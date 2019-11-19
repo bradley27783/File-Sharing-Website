@@ -83,14 +83,3 @@ describe('downloadFile()', () => {
 		done()
 	})
 })
-
-/*describe('writeFile()', () => {
-
-	test('error if null source path', async done => {
-		expect.assertions(1)
-		const file = await new File()
-		await expect( file.uploadFile(null) )
-			.rejects.toEqual( Error('Could not locate uploaded files source path') )
-		done()
-	})
-})*/
