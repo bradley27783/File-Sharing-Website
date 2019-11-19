@@ -1,6 +1,8 @@
 'use strict'
 
 const FileController = require('../modules/FileController.js')
+const FilePersistance = require('../modules/FilePersistance.js')
+const File = require('../modules/file.js')
 const mock = require('mock-fs')
 
 
@@ -55,7 +57,8 @@ describe('downloadFile()', () => {
 
 	beforeEach(async() => {
 		mock({
-			'files/user/file.docx': 'File content'
+			'files/user/file.docx': 'File content',
+			'temp/files': 'Directory'
 		})
 	})
 
@@ -66,6 +69,11 @@ describe('downloadFile()', () => {
 	test('processed download', async done => {
 		expect.assertions(1)
 		const control = await new FileController()
+		const persist = await new FilePersistance()
+		const file = await new File()
+
+		file.init('temp/files','file.docx','user',1000,'type')
+		persist.writeFile(file)
 
 		/** Checking if i recieved an readstream object and the
 		 * one by checking the object for the path i passed
