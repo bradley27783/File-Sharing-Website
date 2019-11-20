@@ -12,7 +12,7 @@ const saltRounds = 10
  * @class
  * @name File
  */
-module.exports = class File {
+class File {
 
 	async init(filename,user,filesize,filetype) {
 		try {
@@ -178,3 +178,5 @@ module.exports = class File {
 		}
 	}
 }
+
+module.exports = File
