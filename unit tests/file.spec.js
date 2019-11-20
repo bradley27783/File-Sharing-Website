@@ -236,7 +236,7 @@ describe('setTimestamp()', () => {
 			const file = await new File()
 			file.setTimestamp()
 			const date = new Date()
-			const checkDate = `${date.getUTCDate()}/${date.getUTCMonth()+1}/${date.getUTCFullYear()}`
+			const checkDate = date.toUTCString()
 
 			expect(file.getTimestamp()).toEqual(checkDate)
 		} catch (err) {
@@ -641,10 +641,14 @@ describe('getTimestamp()', () => {
 		try {
 			const file = await new File()
 			file.setTimestamp()
-			const date = new Date()
-			const checkDate = `${date.getUTCDate()}/${date.getUTCMonth()+1}/${date.getUTCFullYear()}`
 
-			expect(file.getTimestamp()).toEqual(checkDate)
+			let checkDate = new Date()
+			checkDate = `${checkDate.getUTCDate()}/${checkDate.getUTCMonth()+1}/${checkDate.getUTCFullYear()}`
+
+			let returnDate = new Date(file.getTimestamp())
+			returnDate = `${returnDate.getUTCDate()}/${returnDate.getUTCMonth()+1}/${returnDate.getUTCFullYear()}`
+
+			expect(returnDate).toEqual(checkDate)
 		} catch (err) {
 			done.fail()
 		} finally {
