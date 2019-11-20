@@ -55,6 +55,13 @@ module.exports = class FileController {
 	 */
 
 	async downloadFile(path) {
-		return await fs.createReadStream(path)
+		try {
+			if (!fs.existsSync(path)) throw new Error('unable to locate file')
+			else {
+				return await fs.createReadStream(path)
+			}
+		} catch (err) {
+			throw err
+		}
 	}
 }

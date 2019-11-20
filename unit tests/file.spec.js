@@ -773,3 +773,16 @@ describe('getHashedName()', () => {
 		}
 	})
 })
+
+describe('init()', () => {
+
+	//just need to test the catch in init because the setter handle errors themselves
+	test('expect error if filename undefined', async done => {
+		expect.assertions(1)
+
+		const file = await new File()
+		await expect( file.init(undefined,'user',1000,'none'))
+			.rejects.toEqual(Error('file must have a filename'))
+		done()
+	})
+})
