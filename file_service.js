@@ -12,6 +12,7 @@ const staticDir = require('koa-static')
 const bodyParser = require('koa-bodyparser')
 const koaBody = require('koa-body')({multipart: true, uploadDir: '.'})
 const session = require('koa-session')
+const cron = require('node-cron')
 
 /* IMPORT CUSTOM MODULES */
 const FileController = require('./modules/FileController')
@@ -58,14 +59,15 @@ router.get('/download/:user/:filename', async ctx => {
 		//Encode this because the hash in the db is url encoded
 		const filename = encodeURIComponent(ctx.params.filename)
 		const user = ctx.params.user
-		console.log(filename)
-
 		const control = await new FileController()
 		const persist = await new FilePersistance(dbname)
 		const data = await persist.readFile(filename,user)
 		//Set body header and attachment to the file to force download
 		ctx.body = await control.downloadFile(data.directory)
+		await control.deleteFile(data.directory)
+		await persist.deleteFile(data.id)
 		ctx.attachment(data.filename)
+
 	} catch (err) {
 		await ctx.render('error', {message: err.message})
 	}
@@ -102,7 +104,6 @@ router.post('/upload', koaBody, async ctx => {
 		const user = ctx.session.user
 		// call the functions in the module
 		const {path,name,size,type} = ctx.request.files.upload
-		console.log(ctx.request.files.upload)
 
 		const control = await new FileController()
 		const persist = await new FilePersistance(dbname)
@@ -115,6 +116,10 @@ router.post('/upload', koaBody, async ctx => {
 	} catch(err) {
 		await ctx.render('error', {message: err.message})
 	}
+})
+
+cron.schedule('29,59 * * * *', () => {
+	console.log(new Date())
 })
 
 app.use(router.routes())
