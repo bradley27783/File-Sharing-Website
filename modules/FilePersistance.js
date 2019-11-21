@@ -61,11 +61,26 @@ module.exports = class FilePersistance {
 		try {
 			const sql = `SELECT * FROM files WHERE hashedname = "${filename}" AND user = "${user}"`
 			const data = await this.db.get(sql)
-			if(data === undefined || data === null || data.length === 0) {
+			if(data === undefined) {
 				throw new Error('File does not exist')
 			}
 			return data
 		} catch(err) {
+			throw err
+		}
+	}
+
+	async deleteFile(id) {
+		try {
+			let sql = `SELECT * FROM files WHERE id = ${id}`
+			const data = await this.db.get(sql)
+
+			if(data === undefined) throw new Error('File does not exist')
+			else {
+				sql = `DELETE FROM files WHERE id = ${id}`
+				await this.db.run(sql)
+			}
+		} catch (err) {
 			throw err
 		}
 	}

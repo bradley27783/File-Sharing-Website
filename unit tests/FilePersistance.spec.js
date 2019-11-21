@@ -1,7 +1,6 @@
 'use strict'
 
 const FilePersistance = require('../modules/FilePersistance.js')
-const bcrypt = require('bcrypt-promise')
 
 describe('writeFile()', () => {
 
@@ -46,7 +45,34 @@ describe('readFile()', () => {
 		const persist = await new FilePersistance()
 		await persist.writeFile('test.jpeg','user',1000,'image/jpeg')
 
-		await expect( persist.readFile('files/user/test.jpeg') )
+		await expect( persist.readFile('files/user/fake.jpeg','user') )
+			.rejects.toEqual( Error('File does not exist') )
+		done()
+	})
+})
+
+describe('deleteFile()', () => {
+
+	test('successfully delete file', async done => {
+		expect.assertions(1)
+
+		const persist = await new FilePersistance()
+		const file = await persist.writeFile('test.jpeg', 'user', 1000, 'image/jpeg')
+		const data = await persist.readFile(file.getHashedName(),file.getUser())
+
+		await persist.deleteFile(data.id)
+
+		await expect( persist.readFile(file.getFilename(),file.getUser()) )
+			.rejects.toEqual( Error('File does not exist') )
+		done()
+	})
+
+	test('throw error if file does not exists', async done => {
+		expect.assertions(1)
+
+		const persist = await new FilePersistance()
+
+		await expect( persist.deleteFile(1) )
 			.rejects.toEqual( Error('File does not exist') )
 		done()
 	})
