@@ -64,4 +64,16 @@ module.exports = class FileController {
 			throw err
 		}
 	}
+
+	async deleteFile(path) {
+		try {
+			if (!fs.existsSync(path)) throw new Error('unable to locate file')
+			else {
+				fs.unlink(path)
+				return true
+			}
+		} catch (err) {
+			throw err
+		}
+	}
 }

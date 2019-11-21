@@ -38,6 +38,7 @@
     "markdownlint-cli": "^0.18.0",
     "mime-types": "^2.1.25",
     "mock-fs": "^4.10.3",
+    "node-cron": "^2.0.3",
     "remark-cli": "^7.0.1",
     "remark-lint": "^6.0.5",
     "remark-preset-lint-markdown-style-guide": "^2.1.3",

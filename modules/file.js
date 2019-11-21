@@ -21,7 +21,6 @@ class File {
 			this.setFilesize(filesize)
 			this.setFiletype(filetype)
 			this.setDirectory()
-			this.setTimestamp()
 			await this.setHashedName()
 		} catch (err) {
 			throw err
@@ -90,14 +89,6 @@ class File {
 			throw new Error('file must have a filetype')
 		else
 			this.filetype = filetype
-	}
-
-	setTimestamp() {
-		const date = new Date()
-		const day = date.getUTCDate()
-		const month = date.getUTCMonth()+1
-		const year = date.getUTCFullYear()
-		this.timestamp = `${day}/${month}/${year}`
 	}
 
 
