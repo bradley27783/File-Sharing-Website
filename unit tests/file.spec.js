@@ -227,26 +227,6 @@ describe('setFiletype()', () => {
 	})
 })
 
-
-describe('setTimestamp()', () => {
-
-	test('expect to set timestamp', async done => {
-		expect.assertions(1)
-		try {
-			const file = await new File()
-			file.setTimestamp()
-			const date = new Date()
-			const checkDate = date.toUTCString()
-
-			expect(file.getTimestamp()).toEqual(checkDate)
-		} catch (err) {
-			done.fail()
-		} finally {
-			done()
-		}
-	})
-})
-
 describe('setDirectory()', () => {
 
 	test('throw error if filename undefined', async done => {
@@ -640,13 +620,11 @@ describe('getTimestamp()', () => {
 		expect.assertions(1)
 		try {
 			const file = await new File()
-			file.setTimestamp()
 
-			let checkDate = new Date()
-			checkDate = `${checkDate.getUTCDate()}/${checkDate.getUTCMonth()+1}/${checkDate.getUTCFullYear()}`
+			const checkDate = '2019/11/21 18:36:12'
+			file.timestamp = checkDate
 
-			let returnDate = new Date(file.getTimestamp())
-			returnDate = `${returnDate.getUTCDate()}/${returnDate.getUTCMonth()+1}/${returnDate.getUTCFullYear()}`
+			const returnDate = file.getTimestamp()
 
 			expect(returnDate).toEqual(checkDate)
 		} catch (err) {

@@ -32,6 +32,7 @@ app.use(views(`${__dirname}/views`, { extension: 'handlebars' }, {map: { handleb
 const defaultPort = 8080
 const port = process.env.PORT || defaultPort
 const dbname = 'file.db'
+const timepassed = 259200 // <- 3 Days in seconds
 
 /**
  * The secure home page.
@@ -118,8 +119,14 @@ router.post('/upload', koaBody, async ctx => {
 	}
 })
 
-cron.schedule('29,59 * * * *', () => {
-	console.log(new Date())
+cron.schedule('0,30 * * * *', async() => {
+	const persist = await new FilePersistance(dbname)
+	const data = await persist.deleteStaleFiles(timepassed)
+	if (data[0] !== undefined || data.length !== 0) {
+		data.forEach(async file => {
+			await new FileController().deleteFile(file.directory)
+		})
+	}
 })
 
 app.use(router.routes())
