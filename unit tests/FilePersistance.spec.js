@@ -130,3 +130,29 @@ describe('deleteStaleFile()', () => {
 		done()
 	})
 })
+
+describe('readAllFiles()', () => {
+
+	test('correctly get 3 objects', async done => {
+		expect.assertions(1)
+
+		const persist = await new FilePersistance()
+		await persist.writeFile('test1.jpeg', 'user', 1000, 'image/jpeg')
+		await persist.writeFile('test2.jpeg', 'user', 1000, 'image/jpeg')
+		await persist.writeFile('test3.jpeg', 'user', 1000, 'image/jpeg')
+
+		await expect(persist.readAllFiles('user'))
+			.resolves.toHaveLength(3)
+		done()
+	})
+
+	test('throw error if user has no files', async done => {
+		expect.assertions(1)
+
+		const persist = await new FilePersistance()
+
+		await expect(persist.readAllFiles('user'))
+			.rejects.toEqual( Error('You have no files') )
+		done()
+	})
+})

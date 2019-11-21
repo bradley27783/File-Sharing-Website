@@ -71,6 +71,19 @@ module.exports = class FilePersistance {
 		}
 	}
 
+	async readAllFiles(user) {
+		try {
+			const sql = `SELECT * FROM files WHERE user = "${user}"`
+			const data = await this.db.all(sql)
+			if(data === undefined || data.length === 0) {
+				throw new Error('You have no files')
+			}
+			return data
+		} catch(err) {
+			throw err
+		}
+	}
+
 	async deleteFile(id) {
 		try {
 			let sql = `SELECT * FROM files WHERE id = ${id}`
