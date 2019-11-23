@@ -106,4 +106,38 @@ describe('calcDaysLeft()', () => {
 			done()
 		}
 	})
+
+	test('expect if invalid start date throw err', async done => {
+		expect.assertions(1)
+		try {
+			const list = await new List()
+			const startDate = new Date('2019-11-24 1a:0:00')
+			const endDate = new Date('2019-11-24 10:00:00')
+
+			list.calcDaysLeft(startDate,endDate)
+
+			done.fail('test failed')
+		} catch (err) {
+			expect(err.message).toEqual('Start date is NaN')
+		} finally {
+			done()
+		}
+	})
+
+	test('expect if invalid end date throw err', async done => {
+		expect.assertions(1)
+		try {
+			const list = await new List()
+			const startDate = new Date('2019-11-24 10:00:00')
+			const endDate = new Date('2019-11-24 1a:00:00')
+
+			list.calcDaysLeft(startDate,endDate)
+
+			done.fail('test failed')
+		} catch (err) {
+			expect(err.message).toEqual('End date is NaN')
+		} finally {
+			done()
+		}
+	})
 })
