@@ -50,8 +50,24 @@ class List {
 			const sec = 1000 //1000 ms in sec
 			const min = 60 // 60 sec in a min
 			const hour = 60 // 60 min in a hr
-			const diffTime = Math.floor((endDate - startDate)/sec/min) //get hours
+			const diffTime = Math.floor((endDate - startDate)/sec/min) //get minutes
 			if(diffTime > hour) return diffTime % hour
+			return diffTime
+		} catch (err) {
+			throw err
+		}
+	}
+
+
+	calcSecondsLeft(startDate, endDate) {
+		try {
+			startDate = startDate.getTime()
+			endDate = endDate.getTime()
+			this.checkDates(startDate, endDate)
+			const sec = 1000 //1000 ms in sec
+			const min = 60 // 60 sec in a min
+			const diffTime = Math.floor((endDate - startDate)/sec) //get seconds
+			if(diffTime > min) return diffTime % min
 			return diffTime
 		} catch (err) {
 			throw err

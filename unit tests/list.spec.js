@@ -219,7 +219,7 @@ describe('calcHoursLeft()', () => {
 			const startDate = new Date('2019-11-24 1a:0:00')
 			const endDate = new Date('2019-11-24 10:00:00')
 
-			list.calcDaysLeft(startDate,endDate)
+			list.calcHoursLeft(startDate,endDate)
 
 			done.fail('test failed')
 		} catch (err) {
@@ -236,7 +236,7 @@ describe('calcHoursLeft()', () => {
 			const startDate = new Date('2019-11-24 10:00:00')
 			const endDate = new Date('2019-11-24 1a:00:00')
 
-			list.calcDaysLeft(startDate,endDate)
+			list.calcHoursLeft(startDate,endDate)
 
 			done.fail('test failed')
 		} catch (err) {
@@ -307,7 +307,7 @@ describe('calcMinutesLeft()', () => {
 			const startDate = new Date('2019-11-24 11:00:00')
 			const endDate = new Date('2019-11-24 10:00:00')
 
-			list.calcHoursLeft(startDate,endDate)
+			list.calcMinutesLeft(startDate,endDate)
 
 			done.fail('test failed')
 		} catch (err) {
@@ -317,16 +317,16 @@ describe('calcMinutesLeft()', () => {
 		}
 	})
 
-	test('expect if hours = 0 to be 0', async done => {
+	test('expect if min = 0 to be 0', async done => {
 		expect.assertions(1)
 		try {
 			const list = await new List()
 			const startDate = new Date('2019-11-23 10:00:00')
 			const endDate = new Date('2019-11-23 10:00:00')
 
-			const hours = list.calcHoursLeft(startDate,endDate)
+			const min = list.calcMinutesLeft(startDate,endDate)
 
-			expect(hours).toBe(0)
+			expect(min).toBe(0)
 		} catch (err) {
 			done.fail(err)
 		} finally {
@@ -341,7 +341,7 @@ describe('calcMinutesLeft()', () => {
 			const startDate = new Date('2019-11-24 1a:0:00')
 			const endDate = new Date('2019-11-24 10:00:00')
 
-			list.calcDaysLeft(startDate,endDate)
+			list.calcMinutesLeft(startDate,endDate)
 
 			done.fail('test failed')
 		} catch (err) {
@@ -358,7 +358,129 @@ describe('calcMinutesLeft()', () => {
 			const startDate = new Date('2019-11-24 10:00:00')
 			const endDate = new Date('2019-11-24 1a:00:00')
 
-			list.calcDaysLeft(startDate,endDate)
+			list.calcMinutesLeft(startDate,endDate)
+
+			done.fail('test failed')
+		} catch (err) {
+			expect(err.message).toEqual('End date is NaN')
+		} finally {
+			done()
+		}
+	})
+})
+
+describe('calcSecondsLeft()', () => {
+
+	test('correct amount of seconds returned', async done => {
+		expect.assertions(1)
+		try {
+			const list = await new List()
+			const startDate = new Date('2019-11-23 10:30:00')
+			const endDate = new Date('2019-11-23 10:30:10')
+
+			const sec = list.calcSecondsLeft(startDate,endDate)
+
+			expect(sec).toBe(10)
+		} catch (err) {
+			done.fail(err)
+		} finally {
+			done()
+		}
+	})
+
+	test('correct amount of seconds returned if 20 mins and 45 seconds ahead', async done => {
+		expect.assertions(1)
+		try {
+			const list = await new List()
+			const startDate = new Date('2019-11-23 09:00:00')
+			const endDate = new Date('2019-11-25 12:20:45')
+
+			const sec = list.calcSecondsLeft(startDate,endDate)
+
+			expect(sec).toBe(45)
+		} catch (err) {
+			done.fail(err)
+		} finally {
+			done()
+		}
+	})
+
+	test('correct amount of seconds returned if 2 hours and 39 seconds ahead', async done => {
+		expect.assertions(1)
+		try {
+			const list = await new List()
+			const startDate = new Date('2019-11-23 09:00:00')
+			const endDate = new Date('2019-11-23 11:00:39')
+
+			const sec = list.calcSecondsLeft(startDate,endDate)
+
+			expect(sec).toBe(39)
+		} catch (err) {
+			done.fail(err)
+		} finally {
+			done()
+		}
+	})
+
+	test('err if start date > end date', async done => {
+		expect.assertions(1)
+		try {
+			const list = await new List()
+			const startDate = new Date('2019-11-24 11:00:00')
+			const endDate = new Date('2019-11-24 10:00:00')
+
+			list.calcSecondsLeft(startDate,endDate)
+
+			done.fail('test failed')
+		} catch (err) {
+			expect(err.message).toEqual('Start date is greater than end date')
+		} finally {
+			done()
+		}
+	})
+
+	test('expect if seconds = 0 to be 0', async done => {
+		expect.assertions(1)
+		try {
+			const list = await new List()
+			const startDate = new Date('2019-11-23 10:00:00')
+			const endDate = new Date('2019-11-23 10:00:00')
+
+			const sec = list.calcSecondsLeft(startDate,endDate)
+
+			expect(sec).toBe(0)
+		} catch (err) {
+			done.fail(err)
+		} finally {
+			done()
+		}
+	})
+
+	test('expect if invalid start date throw err', async done => {
+		expect.assertions(1)
+		try {
+			const list = await new List()
+			const startDate = new Date('2019-11-24 1a:0:00')
+			const endDate = new Date('2019-11-24 10:00:00')
+
+			list.calcSecondsLeft(startDate,endDate)
+
+			done.fail('test failed')
+		} catch (err) {
+			expect(err.message).toEqual('Start date is NaN')
+		} finally {
+			done()
+		}
+	})
+
+	test('expect if invalid end date throw err', async done => {
+		expect.assertions(1)
+		try {
+			const list = await new List()
+			const startDate = new Date('2019-11-24 10:00:00')
+			const endDate = new Date('2019-11-24 1a:00:00')
+
+			list.calcSecondsLeft(startDate,endDate)
 
 			done.fail('test failed')
 		} catch (err) {
