@@ -10,9 +10,7 @@ class List {
 		try {
 			startDate = startDate.getTime()
 			endDate = endDate.getTime()
-			if (Number.isNaN(startDate)) throw new Error('Start date is NaN')
-			if (Number.isNaN(endDate)) throw new Error('End date is NaN')
-			if (startDate > endDate) throw new Error('Start date is greater than end date')
+			this.checkDates(startDate, endDate)
 			const sec = 1000 //1000 ms in sec
 			const min = 60 // 60 sec in a min
 			const hour = 60 // 60 min in a hr
