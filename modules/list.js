@@ -42,6 +42,22 @@ class List {
 		}
 	}
 
+	calcMinutesLeft(startDate, endDate) {
+		try {
+			startDate = startDate.getTime()
+			endDate = endDate.getTime()
+			this.checkDates(startDate, endDate)
+			const sec = 1000 //1000 ms in sec
+			const min = 60 // 60 sec in a min
+			const hour = 60 // 60 min in a hr
+			const diffTime = Math.floor((endDate - startDate)/sec/min) //get hours
+			if(diffTime > hour) return diffTime % hour
+			return diffTime
+		} catch (err) {
+			throw err
+		}
+	}
+
 	checkDates(startDate, endDate) {
 		if (Number.isNaN(startDate)) throw new Error('Start date is NaN')
 		if (Number.isNaN(endDate)) throw new Error('End date is NaN')
