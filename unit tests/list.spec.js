@@ -27,11 +27,11 @@ describe('calcDaysLeft()', () => {
 		try {
 			const list = await new List()
 			const startDate = new Date('2019-11-23 10:00:00')
-			const endDate = new Date('2019-11-23 10:00:00')
+			const endDate = new Date('2019-11-24 10:00:00')
 
 			const days = list.calcDaysLeft(startDate,endDate)
 
-			expect(days).toBe(0)
+			expect(days).toBe(1)
 		} catch (err) {
 			done.fail(err)
 		} finally {
@@ -66,6 +66,40 @@ describe('calcDaysLeft()', () => {
 			const days = list.calcDaysLeft(startDate,endDate)
 
 			expect(days).toBe(1)
+		} catch (err) {
+			done.fail(err)
+		} finally {
+			done()
+		}
+	})
+
+	test('err if start date > end date', async done => {
+		expect.assertions(1)
+		try {
+			const list = await new List()
+			const startDate = new Date('2019-11-25 10:00:00')
+			const endDate = new Date('2019-11-24 10:00:00')
+
+			list.calcDaysLeft(startDate,endDate)
+
+			done.fail('test failed')
+		} catch (err) {
+			expect(err.message).toEqual('Start date is greater than end date')
+		} finally {
+			done()
+		}
+	})
+
+	test('expect if days = 0 to be 0', async done => {
+		expect.assertions(1)
+		try {
+			const list = await new List()
+			const startDate = new Date('2019-11-23 10:00:00')
+			const endDate = new Date('2019-11-23 10:00:00')
+
+			const days = list.calcDaysLeft(startDate,endDate)
+
+			expect(days).toBe(0)
 		} catch (err) {
 			done.fail(err)
 		} finally {

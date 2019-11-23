@@ -15,6 +15,7 @@ class List {
 			const hour = 60 // 60 min in a hr
 			const day = 24 // 24 hr in a day
 			const diffTime = Math.floor((endDate - startDate)/sec/min/hour/day) //get days
+			if (diffTime < 0) throw new Error('Start date is greater than end date')
 			return diffTime
 		} catch (err) {
 			throw err
