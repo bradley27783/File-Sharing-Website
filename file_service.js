@@ -103,7 +103,6 @@ router.post('/upload', koaBody, async ctx => {
 	try {
 		// extract the user
 		const user = ctx.session.user
-		const shareUser = ctx.request.body.user
 		// call the functions in the module
 		const {path,name,size,type} = ctx.request.files.upload
 		const control = await new FileController()
