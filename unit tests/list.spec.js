@@ -141,3 +141,40 @@ describe('calcDaysLeft()', () => {
 		}
 	})
 })
+
+describe('calcHoursLeft()', () => {
+
+	test('correct amount of hours returned', async done => {
+		expect.assertions(1)
+		try {
+			const list = await new List()
+			const startDate = new Date('2019-11-23 10:00:00')
+			const endDate = new Date('2019-11-23 11:00:00')
+
+			const days = list.calcHoursLeft(startDate,endDate)
+
+			expect(days).toBe(1)
+		} catch (err) {
+			done.fail(err)
+		} finally {
+			done()
+		}
+	})
+
+	test('correct amount of hours returned if 2 days 3 hours ahead', async done => {
+		expect.assertions(1)
+		try {
+			const list = await new List()
+			const startDate = new Date('2019-11-23 09:00:00')
+			const endDate = new Date('2019-11-25 12:00:00')
+
+			const days = list.calcHoursLeft(startDate,endDate)
+
+			expect(days).toBe(3)
+		} catch (err) {
+			done.fail(err)
+		} finally {
+			done()
+		}
+	})
+})
