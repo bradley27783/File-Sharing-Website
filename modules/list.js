@@ -2,8 +2,25 @@
 
 class List {
 
-	constructor(files) {
-		this.files = files
+	formatTimeLeft(files,endDate) {
+		try {
+			if(files === undefined) throw new Error('No files exist')
+			if(endDate === undefined) throw new Error('No endDate')
+			files.forEach(file => {
+				if(file.timestamp === undefined) throw new Error('No timestamp exist')
+				const startDate = new Date(file.timestamp)
+				const days = this.calcDaysLeft(startDate,endDate)
+				const hours = this.calcHoursLeft(startDate,endDate)
+				const minutes = this.calcMinutesLeft(startDate,endDate)
+				const seconds = this.calcSecondsLeft(startDate,endDate)
+				const data = {'days': days,'hours': hours,'minutes': minutes,'seconds': seconds
+				}
+				file['timeleft'] = data
+			})
+			this.files = files
+		} catch (err) {
+			throw err
+		}
 	}
 
 	calcDaysLeft(startDate, endDate) {

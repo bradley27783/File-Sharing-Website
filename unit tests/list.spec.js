@@ -2,29 +2,12 @@
 
 const List = require('../modules/list')
 
-describe('List()', () => {
-
-	test('add list of objects', async done => {
-		expect.assertions(1)
-		try {
-			const obj = [{'key1': 'val1'},{'key2': 'val2'}]
-			const list = await new List(obj)
-
-			expect(list.files).toMatchObject(obj)
-
-		} catch (err) {
-			done.fail()
-		} finally {
-			done()
-		}
-	})
-})
-
 describe('calcDaysLeft()', () => {
 
 	test('correct amount of days returned', async done => {
 		expect.assertions(1)
 		try {
+
 			const list = await new List()
 			const startDate = new Date('2019-11-23 10:00:00')
 			const endDate = new Date('2019-11-24 10:00:00')
@@ -603,6 +586,124 @@ describe('calcSecondsLeft()', () => {
 			done.fail('test failed')
 		} catch (err) {
 			expect(err.message).toEqual('End date is NaN')
+		} finally {
+			done()
+		}
+	})
+})
+
+describe('formatTimeLeft()', () => {
+
+	test('format and assign timeleft', async done => {
+		expect.assertions(2)
+		try {
+			const obj = [{'name1': 'file1','timestamp': '2019-11-23 00:00:00'},{
+				'name2': 'file2','timestamp': '2019-11-25 12:30:30'}]
+
+			const endDate = new Date('2019-11-29 23:59:59')
+			const list = new List()
+			list.formatTimeLeft(obj, endDate)
+
+			const check1 = obj[0] = {'timeleft': {'days': 4,'hours': 11,'minutes': 29,'seconds': 29}}
+			const check2 = obj[1] = {'timeleft': {'days': 6,'hours': 23,'minutes': 59,'seconds': 59}}
+
+			expect(list.files[0]).toMatchObject(check1)
+			expect(list.files[1]).toMatchObject(check2)
+
+		} catch (err) {
+			done.fail(err)
+		} finally {
+			done()
+		}
+	})
+
+	test('correct return correct data - all 0', async done => {
+		expect.assertions(1)
+		try {
+			const obj = [{'name1': 'file1','timestamp': '2019-11-23 00:00:00'}]
+
+			const endDate = new Date('2019-11-23 00:00:00')
+			const list = new List()
+			list.formatTimeLeft(obj, endDate)
+
+			const check = obj[0] = {'timeleft': {'days': 0,'hours': 0,'minutes': 0,'seconds': 0}}
+
+			expect(list.files[0]).toMatchObject(check)
+
+		} catch (err) {
+			done.fail(err)
+		} finally {
+			done()
+		}
+	})
+
+	test('correct return correct data - all max edgecase', async done => {
+		expect.assertions(1)
+		try {
+			const obj = [{'name1': 'file1','timestamp': '2019-11-23 00:00:00'}]
+
+			const endDate = new Date('2019-11-29 00:00:00')
+			const list = new List()
+			list.formatTimeLeft(obj, endDate)
+
+			const check = obj[0] = {'timeleft': {'days': 6,'hours': 23,'minutes': 59,'seconds': 59}}
+
+			expect(list.files[0]).toMatchObject(check)
+
+		} catch (err) {
+			done.fail(err)
+		} finally {
+			done()
+		}
+	})
+
+	test('err if files undefined', async done => {
+		expect.assertions(1)
+		try {
+
+			const endDate = new Date('2019-11-29 00:00:00')
+			const list = new List()
+			list.formatTimeLeft(undefined, endDate)
+
+			done.fail('test failed')
+
+		} catch (err) {
+			expect(err.message).toEqual('No files exist')
+		} finally {
+			done()
+		}
+	})
+
+	test('err if file timestamp is undefined', async done => {
+		expect.assertions(1)
+		try {
+			const obj = [{'name1': 'file1'}]
+
+			const endDate = new Date('2019-11-29 00:00:00')
+			const list = new List()
+			list.formatTimeLeft(obj, endDate)
+
+			done.fail('test failed')
+
+		} catch (err) {
+			expect(err.message).toEqual('No timestamp exist')
+		} finally {
+			done()
+		}
+	})
+
+	test('err if file endDate is undefined', async done => {
+		expect.assertions(1)
+		try {
+			const obj = [{'name1': 'file1','timestamp': '2019-11-23 00:00:00'}]
+
+			const list = new List()
+			list.formatTimeLeft(obj, undefined)
+
+			done.fail('test failed')
+
+		} catch (err) {
+			expect(err.message).toEqual('No endDate')
 		} finally {
 			done()
 		}
