@@ -8,6 +8,7 @@ const sqlite = require('sqlite-async')
 const saltRounds = 10
 
 const File = require('./file')
+const List = require('./list')
 
 /**
  * Class that handles processing of files.
@@ -72,6 +73,17 @@ module.exports = class FileController {
 				fs.unlink(path)
 				return true
 			}
+		} catch (err) {
+			throw err
+		}
+	}
+
+	listFiles(files,endDate,maxDays) {
+		try {
+			if (maxDays <= 0) throw new Error('Must be atleast one day')
+			const list = new List()
+			list.formatTimeLeft(files,endDate,maxDays)
+			return list.files
 		} catch (err) {
 			throw err
 		}

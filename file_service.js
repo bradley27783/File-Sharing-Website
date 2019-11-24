@@ -33,6 +33,7 @@ const defaultPort = 8080
 const port = process.env.PORT || defaultPort
 const dbname = 'file.db'
 const timepassed = 259200 // <- 3 Days in seconds
+const maxDays = 3
 
 /**
  * The secure home page.
@@ -47,7 +48,13 @@ router.get('/', koaBody, async ctx => {
 		ctx.session.authorised = true
 		ctx.session.user = 'test'
 
-		await ctx.render('index', {test: '%242b%2410%24zTtZP%2FWJuxxpc04bgg7LreKqvYJC4dMDj43zxC.FcjhECoIaWWDpW'})
+		const control = await new FileController()
+		const persist = await new FilePersistance(dbname)
+		let files = await persist.readAllFiles(ctx.session.user)
+		const currentDate = new Date()
+		files = control.listFiles(files,currentDate,maxDays)
+
+		await ctx.render('index', {'files': files})
 	} catch(err) {
 		await ctx.render('error', {message: err.message})
 	}

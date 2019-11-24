@@ -595,20 +595,28 @@ describe('calcSecondsLeft()', () => {
 describe('formatTimeLeft()', () => {
 
 	test('format and assign timeleft', async done => {
-		expect.assertions(2)
+		expect.assertions(4)
 		try {
-			const obj = [{'name1': 'file1','timestamp': '2019-11-23 00:00:00'},{
-				'name2': 'file2','timestamp': '2019-11-25 12:30:30'}]
+			const obj = [{'name1': 'file1','timestamp': '2019-11-23 12:30:00'}]
 
-			const endDate = new Date('2019-11-29 23:59:59')
+			const currentDate = new Date('2019-11-26 12:30:00')
 			const list = new List()
-			list.formatTimeLeft(obj, endDate)
+			list.formatTimeLeft(obj, currentDate, 5)
 
-			const check1 = obj[0] = {'timeleft': {'days': 4,'hours': 11,'minutes': 29,'seconds': 29}}
-			const check2 = obj[1] = {'timeleft': {'days': 6,'hours': 23,'minutes': 59,'seconds': 59}}
+			const expectDays = 1
+			const expectHours = 23
+			const expectMinutes = 59
+			const expectSeconds = 59
 
-			expect(list.files[0]).toMatchObject(check1)
-			expect(list.files[1]).toMatchObject(check2)
+			const recievedDays = list.files[0].timeleft.days
+			const recievedHours = list.files[0].timeleft.hours
+			const recievedMinutes = list.files[0].timeleft.minutes
+			const recievedSeconds = list.files[0].timeleft.seconds
+
+			expect(recievedDays).toEqual(expectDays)
+			expect(recievedHours).toEqual(expectHours)
+			expect(recievedMinutes).toEqual(expectMinutes)
+			expect(recievedSeconds).toEqual(expectSeconds)
 
 		} catch (err) {
 			done.fail(err)
@@ -617,18 +625,29 @@ describe('formatTimeLeft()', () => {
 		}
 	})
 
-	test('correct return correct data - all 0', async done => {
-		expect.assertions(1)
+	test('correct return correct data - max edge case', async done => {
+		expect.assertions(4)
 		try {
 			const obj = [{'name1': 'file1','timestamp': '2019-11-23 00:00:00'}]
 
 			const endDate = new Date('2019-11-23 00:00:00')
 			const list = new List()
-			list.formatTimeLeft(obj, endDate)
+			list.formatTimeLeft(obj, endDate, 5)
 
-			const check = obj[0] = {'timeleft': {'days': 0,'hours': 0,'minutes': 0,'seconds': 0}}
+			const expectDays = 4
+			const expectHours = 23
+			const expectMinutes = 59
+			const expectSeconds = 59
 
-			expect(list.files[0]).toMatchObject(check)
+			const recievedDays = list.files[0].timeleft.days
+			const recievedHours = list.files[0].timeleft.hours
+			const recievedMinutes = list.files[0].timeleft.minutes
+			const recievedSeconds = list.files[0].timeleft.seconds
+
+			expect(recievedDays).toEqual(expectDays)
+			expect(recievedHours).toEqual(expectHours)
+			expect(recievedMinutes).toEqual(expectMinutes)
+			expect(recievedSeconds).toEqual(expectSeconds)
 
 		} catch (err) {
 			done.fail(err)
@@ -637,18 +656,29 @@ describe('formatTimeLeft()', () => {
 		}
 	})
 
-	test('correct return correct data - all max edgecase', async done => {
-		expect.assertions(1)
+	test('correct return correct data - all min edgecase', async done => {
+		expect.assertions(4)
 		try {
 			const obj = [{'name1': 'file1','timestamp': '2019-11-23 00:00:00'}]
 
-			const endDate = new Date('2019-11-29 00:00:00')
+			const endDate = new Date('2019-11-28 00:00:00')
 			const list = new List()
-			list.formatTimeLeft(obj, endDate)
+			list.formatTimeLeft(obj, endDate, 5)
 
-			const check = obj[0] = {'timeleft': {'days': 6,'hours': 23,'minutes': 59,'seconds': 59}}
+			const expectDays = 0
+			const expectHours = 0
+			const expectMinutes = 0
+			const expectSeconds = 0
 
-			expect(list.files[0]).toMatchObject(check)
+			const recievedDays = list.files[0].timeleft.days
+			const recievedHours = list.files[0].timeleft.hours
+			const recievedMinutes = list.files[0].timeleft.minutes
+			const recievedSeconds = list.files[0].timeleft.seconds
+
+			expect(recievedDays).toEqual(expectDays)
+			expect(recievedHours).toEqual(expectHours)
+			expect(recievedMinutes).toEqual(expectMinutes)
+			expect(recievedSeconds).toEqual(expectSeconds)
 
 		} catch (err) {
 			done.fail(err)
@@ -663,7 +693,7 @@ describe('formatTimeLeft()', () => {
 
 			const endDate = new Date('2019-11-29 00:00:00')
 			const list = new List()
-			list.formatTimeLeft(undefined, endDate)
+			list.formatTimeLeft(undefined, endDate, 5)
 
 			done.fail('test failed')
 
@@ -681,7 +711,7 @@ describe('formatTimeLeft()', () => {
 
 			const endDate = new Date('2019-11-29 00:00:00')
 			const list = new List()
-			list.formatTimeLeft(obj, endDate)
+			list.formatTimeLeft(obj, endDate, 5)
 
 			done.fail('test failed')
 
@@ -698,12 +728,30 @@ describe('formatTimeLeft()', () => {
 			const obj = [{'name1': 'file1','timestamp': '2019-11-23 00:00:00'}]
 
 			const list = new List()
-			list.formatTimeLeft(obj, undefined)
+			list.formatTimeLeft(obj, undefined,5)
 
 			done.fail('test failed')
 
 		} catch (err) {
 			expect(err.message).toEqual('No endDate')
+		} finally {
+			done()
+		}
+	})
+
+	test('err if file endDate < startDate', async done => {
+		expect.assertions(1)
+		try {
+			const obj = [{'name1': 'file1','timestamp': '2019-11-23 00:00:00'}]
+
+			const endDate = new Date('2019-11-22 00:00:00')
+			const list = new List()
+			list.formatTimeLeft(obj, endDate, 5)
+
+			done.fail('test failed')
+
+		} catch (err) {
+			expect(err.message).toEqual('Start date is greater than end date')
 		} finally {
 			done()
 		}

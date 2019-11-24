@@ -2,7 +2,7 @@
 
 class List {
 
-	formatTimeLeft(files,endDate) {
+	formatTimeLeft(files,endDate,maxDays) {
 		try {
 			if(files === undefined) throw new Error('No files exist')
 			if(endDate === undefined) throw new Error('No endDate')
@@ -13,14 +13,34 @@ class List {
 				const hours = this.calcHoursLeft(startDate,endDate)
 				const minutes = this.calcMinutesLeft(startDate,endDate)
 				const seconds = this.calcSecondsLeft(startDate,endDate)
-				const data = {'days': days,'hours': hours,'minutes': minutes,'seconds': seconds
-				}
-				file['timeleft'] = data
+				const diffData = {'days': days,'hours': hours,'minutes': minutes,'seconds': seconds}
+				const leftData = this.diffToLeft(diffData,maxDays)
+				file['timeleft'] = leftData
 			})
 			this.files = files
 		} catch (err) {
 			throw err
 		}
+	}
+
+	diffToLeft(diffData,days) {
+		const hours = 24; const minutes = 60; const seconds = 60
+		const sameDay = diffData['days'] === days
+		if(sameDay) {
+			diffData['days'] = days - diffData['days']
+			if(diffData['hours'] === 0) diffData['hours'] = 0
+			else diffData['hours'] = hours - diffData['hours'] - 1
+			if(diffData['minutes'] === 0) diffData['minutes'] = 0
+			else diffData['minutes'] = minutes - diffData['minutes'] - 1
+			if(diffData['seconds'] === 0) diffData['seconds'] = 0
+			else diffData['seconds'] = seconds - diffData['seconds'] - 1
+		} else {
+			diffData['days'] = days - diffData['days'] - 1
+			diffData['hours'] = hours - diffData['hours'] - 1
+			diffData['minutes'] = minutes - diffData['minutes'] - 1
+			diffData['seconds'] = seconds - diffData['seconds'] - 1
+		}
+		return diffData
 	}
 
 	calcDaysLeft(startDate, endDate) {
