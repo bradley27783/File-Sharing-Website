@@ -14,7 +14,7 @@ class List {
 				const minutes = this.calcMinutesLeft(startDate,endDate)
 				const seconds = this.calcSecondsLeft(startDate,endDate)
 				const diffData = {'days': days,'hours': hours,'minutes': minutes,'seconds': seconds}
-				const leftData = this.diffToLeft(diffData,maxDays)
+				const leftData = this.diffToLeft(diffData,maxDays,file.timestamp,endDate)
 				file['timeleft'] = leftData
 			})
 			this.files = files
@@ -23,22 +23,52 @@ class List {
 		}
 	}
 
-	diffToLeft(diffData,days) {
-		const hours = 24; const minutes = 60; const seconds = 60
-		const sameDay = diffData['days'] === days
-		if(sameDay) {
-			diffData['days'] = days - diffData['days']
-			if(diffData['hours'] === 0) diffData['hours'] = 0
-			else diffData['hours'] = hours - diffData['hours'] - 1
-			if(diffData['minutes'] === 0) diffData['minutes'] = 0
-			else diffData['minutes'] = minutes - diffData['minutes'] - 1
-			if(diffData['seconds'] === 0) diffData['seconds'] = 0
-			else diffData['seconds'] = seconds - diffData['seconds'] - 1
+	daysLeft(daysDiff, maxDays) {
+		console.log(daysDiff)
+		console.log(maxDays)
+		if (daysDiff === 0) return maxDays - 1 //return max days because there is 0 difference
+		else if (daysDiff === maxDays) return 0
+		else return maxDays - daysDiff - 1
+	}
+
+	hoursLeft(hours) {
+		console.log(hours)
+		const hoursInDay = 24
+		if (hours === 0) return hoursInDay - 1 //if difference is 0 then 24 - 1
+		else if (hours === hoursInDay) return 0
+		else return hoursInDay - hours - 1
+	}
+
+	minutesLeft(min) {
+		const minInHour = 60
+		if (min === 0) return minInHour - 1
+		else if (min === minInHour) return 0
+		else return minInHour - min - 1
+	}
+
+	secondsLeft(sec) {
+		const secInMin = 60
+		if (sec === 0) return secInMin - 1
+		else if (sec === secInMin) return 0
+		else return secInMin - sec - 1
+	}
+
+	diffToLeft(diffData,maxDays,startDay, currentDay) {
+		startDay = new Date(startDay).getTime()
+		currentDay = new Date(currentDay).getTime()
+		const msInDay = 86400000
+		const endDay = startDay + maxDays * msInDay
+
+		if (currentDay === endDay) {
+			diffData['days'] = 0
+			diffData['hours'] = 0
+			diffData['minutes'] = 0
+			diffData['seconds'] = 0
 		} else {
-			diffData['days'] = days - diffData['days'] - 1
-			diffData['hours'] = hours - diffData['hours'] - 1
-			diffData['minutes'] = minutes - diffData['minutes'] - 1
-			diffData['seconds'] = seconds - diffData['seconds'] - 1
+			diffData['days'] = this.daysLeft(diffData['days'],maxDays)
+			diffData['hours'] = this.hoursLeft(diffData['hours'])
+			diffData['minutes'] = this.minutesLeft(diffData['minutes'])
+			diffData['seconds'] = this.secondsLeft(diffData['seconds'])
 		}
 		return diffData
 	}

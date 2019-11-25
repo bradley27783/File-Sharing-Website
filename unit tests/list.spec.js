@@ -630,11 +630,11 @@ describe('formatTimeLeft()', () => {
 		try {
 			const obj = [{'name1': 'file1','timestamp': '2019-11-23 00:00:00'}]
 
-			const endDate = new Date('2019-11-23 00:00:00')
+			const endDate = new Date('2019-11-25 00:00:00')
 			const list = new List()
 			list.formatTimeLeft(obj, endDate, 5)
 
-			const expectDays = 4
+			const expectDays = 2
 			const expectHours = 23
 			const expectMinutes = 59
 			const expectSeconds = 59
@@ -686,6 +686,7 @@ describe('formatTimeLeft()', () => {
 			done()
 		}
 	})
+	
 
 	test('err if files undefined', async done => {
 		expect.assertions(1)
