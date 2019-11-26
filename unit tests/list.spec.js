@@ -686,7 +686,7 @@ describe('formatTimeLeft()', () => {
 			done()
 		}
 	})
-	
+
 
 	test('err if files undefined', async done => {
 		expect.assertions(1)
@@ -753,6 +753,303 @@ describe('formatTimeLeft()', () => {
 
 		} catch (err) {
 			expect(err.message).toEqual('Start date is greater than end date')
+		} finally {
+			done()
+		}
+	})
+})
+
+describe('daysLeft()', () => {
+
+	test('return correct value if daysDiff === 0', async done => {
+		expect.assertions(1)
+		try {
+			const list = new List()
+
+			const val = list.daysLeft(0,5)
+
+			expect(val).toEqual(4)
+		} catch (err) {
+			done.fail('test failed')
+		} finally {
+			done()
+		}
+	})
+
+	test('return correct value if daysDiff = 0 and max days = 1', async done => {
+		expect.assertions(1)
+		try {
+			const list = new List()
+
+			const val = list.daysLeft(0,1)
+
+			expect(val).toEqual(0)
+		} catch (err) {
+			done.fail('test failed')
+		} finally {
+			done()
+		}
+	})
+
+	test('return correct value if daysDiff = 0 and max days = 0', async done => {
+		expect.assertions(1)
+		try {
+			const list = new List()
+
+			const val = list.daysLeft(0,0)
+
+			expect(val).toEqual(0)
+		} catch (err) {
+			done.fail('test failed')
+		} finally {
+			done()
+		}
+	})
+
+	test('return correct value', async done => {
+		expect.assertions(1)
+		try {
+			const list = new List()
+
+			const val = list.daysLeft(2,6)
+
+			expect(val).toEqual(3)
+		} catch (err) {
+			done.fail('test failed')
+		} finally {
+			done()
+		}
+	})
+})
+
+describe('hoursLeft()', () => {
+
+	test('return correct value if hours = hoursInDay', async done => {
+		expect.assertions(1)
+		try {
+			const list = new List()
+
+			const val = list.hoursLeft(24)
+
+			expect(val).toEqual(0)
+		} catch (err) {
+			done.fail('test failed')
+		} finally {
+			done()
+		}
+	})
+
+	test('return correct value if hours = 0', async done => {
+		expect.assertions(1)
+		try {
+			const list = new List()
+
+			const val = list.hoursLeft(0)
+
+			expect(val).toEqual(23)
+		} catch (err) {
+			done.fail('test failed')
+		} finally {
+			done()
+		}
+	})
+
+	test('return correct value', async done => {
+		expect.assertions(1)
+		try {
+			const list = new List()
+
+			const val = list.hoursLeft(4)
+
+			expect(val).toEqual(19)
+		} catch (err) {
+			done.fail('test failed')
+		} finally {
+			done()
+		}
+	})
+
+	test('return correct value - min case', async done => {
+		expect.assertions(1)
+		try {
+			const list = new List()
+
+			const val = list.hoursLeft(1)
+
+			expect(val).toEqual(22)
+		} catch (err) {
+			done.fail('test failed')
+		} finally {
+			done()
+		}
+	})
+
+	test('return correct value - max case', async done => {
+		expect.assertions(1)
+		try {
+			const list = new List()
+
+			const val = list.hoursLeft(23)
+
+			expect(val).toEqual(0)
+		} catch (err) {
+			done.fail('test failed')
+		} finally {
+			done()
+		}
+	})
+})
+
+describe('minutesLeft()', () => {
+
+	test('return correct value if minutes = minInHour', async done => {
+		expect.assertions(1)
+		try {
+			const list = new List()
+
+			const val = list.minutesLeft(60)
+
+			expect(val).toEqual(0)
+		} catch (err) {
+			done.fail('test failed')
+		} finally {
+			done()
+		}
+	})
+
+	test('return correct value if minutes = 0', async done => {
+		expect.assertions(1)
+		try {
+			const list = new List()
+
+			const val = list.minutesLeft(0)
+
+			expect(val).toEqual(59)
+		} catch (err) {
+			done.fail('test failed')
+		} finally {
+			done()
+		}
+	})
+
+	test('return correct value', async done => {
+		expect.assertions(1)
+		try {
+			const list = new List()
+
+			const val = list.minutesLeft(30)
+
+			expect(val).toEqual(29)
+		} catch (err) {
+			done.fail('test failed')
+		} finally {
+			done()
+		}
+	})
+
+	test('return correct value - min case', async done => {
+		expect.assertions(1)
+		try {
+			const list = new List()
+
+			const val = list.minutesLeft(1)
+
+			expect(val).toEqual(58)
+		} catch (err) {
+			done.fail('test failed')
+		} finally {
+			done()
+		}
+	})
+
+	test('return correct value - max case', async done => {
+		expect.assertions(1)
+		try {
+			const list = new List()
+
+			const val = list.minutesLeft(59)
+
+			expect(val).toEqual(0)
+		} catch (err) {
+			done.fail('test failed')
+		} finally {
+			done()
+		}
+	})
+})
+
+describe('secondsLeft()', () => {
+
+	test('return correct value if seconds = secInMin', async done => {
+		expect.assertions(1)
+		try {
+			const list = new List()
+
+			const val = list.secondsLeft(60)
+
+			expect(val).toEqual(0)
+		} catch (err) {
+			done.fail('test failed')
+		} finally {
+			done()
+		}
+	})
+
+	test('return correct value if seconds = 0', async done => {
+		expect.assertions(1)
+		try {
+			const list = new List()
+
+			const val = list.secondsLeft(0)
+
+			expect(val).toEqual(59)
+		} catch (err) {
+			done.fail('test failed')
+		} finally {
+			done()
+		}
+	})
+
+	test('return correct value', async done => {
+		expect.assertions(1)
+		try {
+			const list = new List()
+
+			const val = list.secondsLeft(30)
+
+			expect(val).toEqual(29)
+		} catch (err) {
+			done.fail('test failed')
+		} finally {
+			done()
+		}
+	})
+
+	test('return correct value - min case', async done => {
+		expect.assertions(1)
+		try {
+			const list = new List()
+
+			const val = list.secondsLeft(1)
+
+			expect(val).toEqual(58)
+		} catch (err) {
+			done.fail('test failed')
+		} finally {
+			done()
+		}
+	})
+
+	test('return correct value - max case', async done => {
+		expect.assertions(1)
+		try {
+			const list = new List()
+
+			const val = list.secondsLeft(59)
+
+			expect(val).toEqual(0)
+		} catch (err) {
+			done.fail('test failed')
 		} finally {
 			done()
 		}

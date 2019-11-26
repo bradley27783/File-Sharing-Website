@@ -24,32 +24,29 @@ class List {
 	}
 
 	daysLeft(daysDiff, maxDays) {
-		console.log(daysDiff)
-		console.log(maxDays)
-		if (daysDiff === 0) return maxDays - 1 //return max days because there is 0 difference
-		else if (daysDiff === maxDays) return 0
+		if (daysDiff === maxDays) return 0
+		else if (daysDiff === 0) return maxDays - 1 //return max days because there is 0 difference
 		else return maxDays - daysDiff - 1
 	}
 
 	hoursLeft(hours) {
-		console.log(hours)
 		const hoursInDay = 24
-		if (hours === 0) return hoursInDay - 1 //if difference is 0 then 24 - 1
-		else if (hours === hoursInDay) return 0
+		if (hours === hoursInDay) return 0
+		else if (hours === 0) return hoursInDay - 1 //if difference is 0 then 24 - 1
 		else return hoursInDay - hours - 1
 	}
 
 	minutesLeft(min) {
 		const minInHour = 60
-		if (min === 0) return minInHour - 1
-		else if (min === minInHour) return 0
+		if (min === minInHour) return 0
+		else if (min === 0) return minInHour - 1
 		else return minInHour - min - 1
 	}
 
 	secondsLeft(sec) {
 		const secInMin = 60
-		if (sec === 0) return secInMin - 1
-		else if (sec === secInMin) return 0
+		if (sec === secInMin) return 0
+		else if (sec === 0) return secInMin - 1
 		else return secInMin - sec - 1
 	}
 
