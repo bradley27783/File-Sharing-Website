@@ -17,6 +17,7 @@ const cron = require('node-cron')
 /* IMPORT CUSTOM MODULES */
 const FileController = require('./modules/FileController')
 const FilePersistance = require('./modules/FilePersistance')
+const EmailController = require('./modules/EmailController')
 
 
 const app = new Koa()
@@ -34,6 +35,8 @@ const port = process.env.PORT || defaultPort
 const dbname = 'file.db'
 const timepassed = 259200 // <- 3 Days in seconds
 const maxDays = 3
+const email = 'harri361340ctwork@gmail.com'
+const pass = 'a@auy&&Azz>X?;;aa'
 
 /**
  * The secure home page.
@@ -56,6 +59,59 @@ router.get('/', koaBody, async ctx => {
 
 		await ctx.render('index', {'files': files})
 	} catch(err) {
+		await ctx.render('error', {message: err.message})
+	}
+})
+
+router.get('/email/:user/:filename', async ctx => {
+	try {
+		if(ctx.session.authorised !== true) return ctx.redirect('/login?msg=you need to log in')
+
+		const user = ctx.params.user
+		const filename = ctx.params.filename
+
+		await ctx.render('email', {user: user, file: filename})
+	} catch (err) {
+		await ctx.render('error', {message: err.message})
+	}
+})
+
+router.post('/sendemail/:user/:filename', koaBody, async ctx => {
+	try {
+		if(ctx.session.authorised !== true) return ctx.redirect('/login?msg=you need to log in')
+		const toEmail = ctx.request.body.email
+
+		const url = ctx.request.origin
+		const user = ctx.params.user
+		const filename = ctx.params.filename
+		const link = `${url}/download/${user}/${filename}`
+
+		const emailControl = await new EmailController()
+		emailControl.sendEmail(email,pass,toEmail,`Shared File from ${user}`,`Click the link to download: ${link}`)
+
+		await ctx.redirect('/', {success: `File successfully sent to ${toEmail}`})
+	} catch (err) {
+		await ctx.render('error', {message: err.message})
+	}
+})
+
+router.get('/download/:user/:filename', async ctx => {
+
+	try {
+		//Get parameters
+		//Encode this because the hash in the db is url encoded
+		const filename = encodeURIComponent(ctx.params.filename)
+		const user = ctx.params.user
+		const control = await new FileController()
+		const persist = await new FilePersistance(dbname)
+		const data = await persist.readFile(filename,user)
+		//Set body header and attachment to the file to force download
+		ctx.body = await control.downloadFile(data.directory)
+		await control.deleteFile(data.directory)
+		await persist.deleteFile(data.id)
+		ctx.attachment(data.filename)
+
+	} catch (err) {
 		await ctx.render('error', {message: err.message})
 	}
 })
