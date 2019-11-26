@@ -30,6 +30,14 @@ class Email {
 			text: msg
 		}
 	}
+
+	async sendEmail() {
+		try {
+			await this.transporter.sendMail(this.mailOptions)
+		} catch (err) {
+			throw new Error('Failed to send email')
+		}
+	}
 }
 
 module.exports = Email

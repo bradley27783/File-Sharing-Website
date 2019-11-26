@@ -167,3 +167,19 @@ describe('setMailingOptions()', () => {
 		}
 	})
 })
+
+
+describe('sendEmail()', () => {
+
+	test('correctly send email', async done => {
+		expect.assertions(1)
+
+		const email = await new Email()
+
+		email.setTransporter('fakeemail@gmail.com','password')
+		email.setMailingOptions('fakeemail@gmail.com','fakeemail2@gmail.com','Subject Title','Some message')
+
+		await expect(email.sendEmail()).rejects.toEqual(Error('Failed to send email'))
+		done()
+	})
+})
