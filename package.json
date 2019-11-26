@@ -24,6 +24,7 @@
   "dependencies": {
     "bcrypt": "^3.0.6",
     "bcrypt-promise": "^2.0.0",
+    "email-validator": "^2.0.4",
     "fs-extra": "^7.0.1",
     "handlebars": "^4.5.2",
     "koa": "^2.11.0",
@@ -39,6 +40,7 @@
     "mime-types": "^2.1.25",
     "mock-fs": "^4.10.3",
     "node-cron": "^2.0.3",
+    "nodemailer": "^6.3.1",
     "remark-cli": "^7.0.1",
     "remark-lint": "^6.0.5",
     "remark-preset-lint-markdown-style-guide": "^2.1.3",
