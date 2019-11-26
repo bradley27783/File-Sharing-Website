@@ -134,7 +134,7 @@ describe('listFiles()', () => {
 	test('format and assign timeleft', async done => {
 		expect.assertions(4)
 		try {
-			const obj = [{'name1': 'file1','timestamp': '2019-11-23 00:00:00'}]
+			const obj = [{'name1': 'file1','timestamp': '2019-11-23 00:00:00','filename': 'file.jpeg'}]
 
 			const endDate = new Date('2019-11-26 00:00:00')
 			const control = await new FileController()
@@ -165,7 +165,7 @@ describe('listFiles()', () => {
 	test('throw error if maxDay <= 0', async done => {
 		expect.assertions(1)
 		try {
-			const obj = [{'name1': 'file1','timestamp': '2019-11-23 00:00:00'}]
+			const obj = [{'name1': 'file1','timestamp': '2019-11-23 00:00:00','filename': 'file.jpeg'}]
 
 			const endDate = new Date('2019-11-26 00:00:00')
 			const control = await new FileController()
@@ -183,7 +183,7 @@ describe('listFiles()', () => {
 	test('throw error if maxDay <= -1', async done => {
 		expect.assertions(1)
 		try {
-			const obj = [{'name1': 'file1','timestamp': '2019-11-23 00:00:00'}]
+			const obj = [{'name1': 'file1','timestamp': '2019-11-23 00:00:00','filename': 'file.jpeg'}]
 
 			const endDate = new Date('2019-11-26 00:00:00')
 			const control = await new FileController()
@@ -201,7 +201,7 @@ describe('listFiles()', () => {
 	test('format and assign timeleft if maxDays > 0', async done => {
 		expect.assertions(4)
 		try {
-			const obj = [{'name1': 'file1','timestamp': '2019-11-23 00:00:00'}]
+			const obj = [{'name1': 'file1','timestamp': '2019-11-23 00:00:00','filename': 'file.jpeg'}]
 
 			const endDate = new Date('2019-11-23 00:00:00')
 			const control = await new FileController()

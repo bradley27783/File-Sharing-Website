@@ -1055,3 +1055,134 @@ describe('secondsLeft()', () => {
 		}
 	})
 })
+
+describe('formatFiletypes()', () => {
+
+	test('filetype = fa fa-file-image-o if image', async done => {
+		expect.assertions(1)
+		try {
+			const list = await new List()
+			const obj = [{'filename': 'test.jpeg'}]
+
+			list.formatFiletype(obj)
+
+			expect(list.files[0].filetype).toEqual('fa fa-file-image-o')
+		} catch (err) {
+			done.fail(err)
+		} finally {
+			done()
+		}
+	})
+
+	test('filetype = fa fa-file-audio-o if audio', async done => {
+		expect.assertions(1)
+		try {
+			const list = await new List()
+			const obj = [{'filename': 'test.mp3'}]
+
+			list.formatFiletype(obj)
+
+			expect(list.files[0].filetype).toEqual('fa fa-file-audio-o')
+		} catch (err) {
+			done.fail(err)
+		} finally {
+			done()
+		}
+	})
+
+	test('filetype = fa fa-file-code-o if application', async done => {
+		expect.assertions(1)
+		try {
+			const list = await new List()
+			const obj = [{'filename': 'test.js'}]
+
+			list.formatFiletype(obj)
+
+			expect(list.files[0].filetype).toEqual('fa fa-file-code-o')
+		} catch (err) {
+			done.fail(err)
+		} finally {
+			done()
+		}
+	})
+
+	test('filetype = fa fa-file-movie-o if video', async done => {
+		expect.assertions(1)
+		try {
+			const list = await new List()
+			const obj = [{'filename': 'test.mp4'}]
+
+			list.formatFiletype(obj)
+
+			expect(list.files[0].filetype).toEqual('fa fa-file-movie-o')
+		} catch (err) {
+			done.fail(err)
+		} finally {
+			done()
+		}
+	})
+
+	test('filetype = fa fa-file-text-o if text file', async done => {
+		expect.assertions(1)
+		try {
+			const list = await new List()
+			const obj = [{'filename': 'test.txt'}]
+
+			list.formatFiletype(obj)
+
+			expect(list.files[0].filetype).toEqual('fa fa-file-text-o')
+		} catch (err) {
+			done.fail(err)
+		} finally {
+			done()
+		}
+	})
+
+	test('filetype = fa fa-file as default if lookup false', async done => {
+		expect.assertions(1)
+		try {
+			const list = await new List()
+			const obj = [{'filename': 'test.db'}]
+
+			list.formatFiletype(obj)
+
+			expect(list.files[0].filetype).toEqual('fa fa-file')
+		} catch (err) {
+			done.fail(err)
+		} finally {
+			done()
+		}
+	})
+
+	test('filetype = fa fa-file as default', async done => {
+		expect.assertions(1)
+		try {
+			const list = await new List()
+			const obj = [{'filename': 'test.ttf'}]
+
+			list.formatFiletype(obj)
+
+			expect(list.files[0].filetype).toEqual('fa fa-file')
+		} catch (err) {
+			done.fail(err)
+		} finally {
+			done()
+		}
+	})
+
+	test('throw err if no files', async done => {
+		expect.assertions(1)
+		try {
+			const list = await new List()
+
+			list.formatFiletype()
+
+			done.fail('test failed')
+		} catch (err) {
+			expect(err.message).toEqual('No files exist')
+		} finally {
+			done()
+		}
+	})
+
+})
