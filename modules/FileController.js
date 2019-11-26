@@ -83,6 +83,7 @@ module.exports = class FileController {
 			if (maxDays <= 0) throw new Error('Must be atleast one day')
 			const list = new List()
 			list.formatTimeLeft(files,endDate,maxDays)
+			list.formatFiletype(files)
 			return list.files
 		} catch (err) {
 			throw err

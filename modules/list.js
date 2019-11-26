@@ -1,6 +1,28 @@
 'use strict'
 
+const mime = require('mime-types')
+
 class List {
+
+	formatFiletype(files) {
+		if(files === undefined) throw new Error('No files exist')
+		// eslint-disable-next-line complexity
+		files.forEach(file => {
+			const filename = file.filename
+			let type = mime.lookup(filename)
+			if(type === false) file['filetype'] = 'fa fa-file'
+			else {
+				type = type.split('/')[0]
+				if(type === 'image') file['filetype'] = 'fa fa-file-image-o'
+				else if(type === 'audio') file['filetype'] = 'fa fa-file-audio-o'
+				else if(type === 'application') file['filetype'] = 'fa fa-file-code-o'
+				else if(type === 'video') file['filetype'] = 'fa fa-file-movie-o'
+				else if(type === 'text') file['filetype'] = 'fa fa-file-text-o'
+				else file['filetype'] = 'fa fa-file'
+			}
+		})
+		this.files = files
+	}
 
 	formatTimeLeft(files,endDate,maxDays) {
 		try {
