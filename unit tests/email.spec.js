@@ -171,7 +171,7 @@ describe('setMailingOptions()', () => {
 
 describe('sendEmail()', () => {
 
-	test('correctly send email', async done => {
+	test('fail to send email', async done => {
 		expect.assertions(1)
 
 		const email = await new Email()
