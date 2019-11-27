@@ -68,3 +68,25 @@ describe('login()', () => {
 	})
 
 })
+
+describe('login()', () => {
+	test('return user', async done => {
+		expect.assertions(1)
+		const account = await new Accounts()
+
+		await account.register('user', 'password')
+
+		await expect(account.checkUser('user')).resolves.toEqual('user')
+		done()
+	})
+
+	test('return false if user doesnt exist', async done => {
+		expect.assertions(1)
+		const account = await new Accounts()
+
+		await account.register('user', 'password')
+
+		await expect(account.checkUser('test')).resolves.toBe(false)
+		done()
+	})
+})

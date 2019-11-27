@@ -47,6 +47,21 @@ module.exports = class FileController {
 		}
 	}
 
+	// eslint-disable-next-line max-params
+	async uploadSharedFile(path,filename,user,filesize,filetype,originalUser) {
+		try {
+			if(!user) return false
+			if (user === originalUser) throw new Error('Cannot share to yourself')
+			const file = await new File()
+			await file.init(filename,user,filesize,filetype)
+
+			await fs.copy(path, file.getDirectory())
+			return true
+		} catch (err) {
+			throw err
+		}
+	}
+
 	/**
 	 * Downloading a file from server
 	 *
@@ -89,4 +104,5 @@ module.exports = class FileController {
 			throw err
 		}
 	}
+
 }

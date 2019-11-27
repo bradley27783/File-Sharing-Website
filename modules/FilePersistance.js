@@ -116,4 +116,25 @@ module.exports = class FilePersistance {
 			throw err
 		}
 	}
+
+	async writeSharedFile(name,user,size,type,originalUser) {
+		try {
+			if(!user) return false
+			if(user === originalUser) throw new Error('Cannot share to yourself')
+			const file = await new File()
+			await file.init(name,user,size,type)
+			let sql = `SELECT * FROM files WHERE filename = "${file.getFilename()}" AND user = "${user}"`
+			const data = await this.db.all(sql)
+
+			if(data.length === 0) {
+				sql = 'INSERT INTO files(filename, directory, user, filesize, hashedname)' +
+                    `VALUES("${file.getFilename()}", "${file.getDirectory()}","${user}",`+
+                    `${file.getFilesize()}, "${file.getHashedName()}");`
+				await this.db.run(sql)
+				return file
+			} else throw new Error('That user already has that file')
+		} catch(err) {
+			throw err
+		}
+	}
 }

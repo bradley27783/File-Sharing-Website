@@ -47,4 +47,14 @@ module.exports = class User {
 		}
 	}
 
+	async checkUser(user) {
+		let sql = `SELECT count(id) AS count FROM users WHERE user="${user}";`
+		const records = await this.db.get(sql)
+		if(!records.count) return false
+
+		sql = `SELECT user FROM users WHERE user="${user}";`
+		const data = await this.db.get(sql)
+		return data.user
+	}
+
 }

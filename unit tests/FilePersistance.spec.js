@@ -156,3 +156,44 @@ describe('readAllFiles()', () => {
 		done()
 	})
 })
+
+
+describe('writeSharedFile()', () => {
+
+	test('successfully write file', async done => {
+		expect.assertions(1)
+		const persist = await new FilePersistance()
+
+		const val = await persist.writeSharedFile('test.jpeg', 'user', 1000, 'image/jpeg','original')
+		expect(val).toMatchObject({'filename': 'test.jpeg'})
+		done()
+	})
+
+	test('throw error if file already exists', async done => {
+		expect.assertions(1)
+		const persist = await new FilePersistance()
+
+		await persist.writeSharedFile('test.jpeg', 'user', 1000, 'image/jpeg','original')
+
+		await expect( persist.writeSharedFile('test.jpeg','user',1000,'image/jpeg','original') )
+			.rejects.toEqual( Error('That user already has that file') )
+		done()
+	})
+
+	test('return false if user = false', async done => {
+		expect.assertions(1)
+		const persist = await new FilePersistance()
+
+		await expect(persist.writeSharedFile('test.jpeg', false, 1000, 'image/jpeg')).resolves.toBe(false)
+		done()
+	})
+
+	test('error if user is sharing with themself', async done => {
+		expect.assertions(1)
+		const persist = await new FilePersistance()
+
+		await expect(persist.writeSharedFile('test.jpeg', 'user', 1000, 'image/jpeg','user'))
+			.rejects.toEqual(Error('Cannot share to yourself'))
+		done()
+	})
+})

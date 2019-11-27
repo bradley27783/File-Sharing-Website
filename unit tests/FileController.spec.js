@@ -3,6 +3,47 @@
 const FileController = require('../modules/FileController.js')
 const mock = require('mock-fs')
 
+describe('uploadSharedFile()', () => {
+
+	beforeEach(async() => {
+		mock({
+			'test/directory': 'file.jpeg'
+		})
+	})
+
+	afterEach(async() => {
+		afterEach(mock.restore)
+	})
+
+	test('processed upload', async done => {
+		expect.assertions(1)
+		const controller = await new FileController()
+
+		const val = await controller.uploadSharedFile('test/directory','file.jpeg','test',1000,'image/jpeg','sharer')
+
+		expect(val).toBe(true)
+		done()
+	})
+
+	test('expect false if user = false', async done => {
+		expect.assertions(1)
+		const controller = await new FileController()
+
+		await expect(controller.uploadSharedFile('test/directory','file.jpeg',false,1000,'image/jpeg','sharer'))
+			.resolves.toBe(false)
+		done()
+	})
+
+	test('error if user is sharing with themselfs', async done => {
+		expect.assertions(1)
+		const controller = await new FileController()
+
+		// eslint-disable-next-line max-len
+		await expect(controller.uploadSharedFile('test/directory','file.jpeg','user',1000,'image/jpeg','user'))
+			.rejects.toEqual(Error('Cannot share to yourself'))
+		done()
+	})
+})
 
 describe('uploadFile()', () => {
 
@@ -229,3 +270,5 @@ describe('listFiles()', () => {
 		}
 	})
 })
+
+
