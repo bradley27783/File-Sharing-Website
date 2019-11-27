@@ -242,14 +242,11 @@ router.post('/upload', koaBody, async ctx => {
 	}
 })
 
-cron.schedule('0,30 * * * *', async() => {
+cron.schedule('* * * * * *', async() => {
+	const control = await new FileController()
 	const persist = await new FilePersistance(filedb)
-	const data = await persist.deleteStaleFiles(timepassed)
-	if (data[0] !== undefined || data.length !== 0) {
-		data.forEach(async file => {
-			await new FileController().deleteFile(file.directory)
-		})
-	}
+	const data = await persist.deleteStaleFiles(60)
+	control.deleteStaleFiles(data)
 })
 
 app.use(router.routes())

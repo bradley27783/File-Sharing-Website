@@ -3,6 +3,35 @@
 const FileController = require('../modules/FileController.js')
 const mock = require('mock-fs')
 
+describe('deleteStaleFiles()', () => {
+
+	beforeEach(async() => {
+		mock({
+			'files/user/file.docx': 'File content'
+		})
+	})
+
+	afterEach(async() => {
+		afterEach(mock.restore)
+	})
+
+	test('successfully delete file', async done => {
+		expect.assertions(1)
+		const control = await new FileController()
+		await expect(control.deleteStaleFiles([{'directory': 'files/user/file.docx'}]))
+			.resolves.toBe(true)
+		done()
+	})
+
+	test('expect false if file is undefined/length = 0 delete file', async done => {
+		expect.assertions(1)
+		const control = await new FileController()
+		await expect(control.deleteStaleFiles([]))
+			.resolves.toBe(false)
+		done()
+	})
+})
+
 describe('uploadSharedFile()', () => {
 
 	beforeEach(async() => {

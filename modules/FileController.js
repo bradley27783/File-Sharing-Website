@@ -105,4 +105,14 @@ module.exports = class FileController {
 		}
 	}
 
+	async deleteStaleFiles(data) {
+		if (data[0] !== undefined || data.length !== 0) {
+			data.forEach(async file => {
+				await this.deleteFile(file.directory)
+			})
+			return true
+		}
+		return false
+	}
+
 }
