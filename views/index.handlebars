@@ -15,6 +15,9 @@
 		<p><a href="/upload">upload</a></p>
 		<p><a href="/logout">log out</a></p>
 
+		{{#if msg}}
+ 			<p class="msg">{{msg}}</p>
+		{{/if}}
 		<table>
 			<tr>
 				<th>Filename</th>
