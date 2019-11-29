@@ -228,14 +228,14 @@ router.post('/upload', koaBody, async ctx => {
 		let sharedUser = ctx.request.body.user
 		// call the functions in the module
 		const {path,name,size,type} = ctx.request.files.upload
-		const control = await new FileController()
+
 		const persist = await new FilePersistance(filedb)
 		const account = await new User(dbName)
-		await control.uploadFile(path,name,user,size,type)
-		await persist.writeFile(name,user,size,type)
+
+		const test = await persist.writeFile(path,name,user,size,type)
+		console.log(test)
 		sharedUser = await account.checkUser(sharedUser)
-		await control.uploadSharedFile(path,name,sharedUser,size,type,user)
-		await persist.writeSharedFile(name,sharedUser,size,type,user)
+		await persist.writeSharedFile(path,name,sharedUser,size,type,user)
 		ctx.redirect('/')
 	} catch(err) {
 		await ctx.render('error', {message: err.message})

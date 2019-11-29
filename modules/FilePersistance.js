@@ -37,7 +37,7 @@ module.exports = class FilePersistance {
 	 * @returns {boolean} - Returns true when the function completes
 	 */
 
-	async writeFile(name,user,size,type) {
+	async writeFile(path,name,user,size,type) {
 		try {
 			const file = await new File()
 			await file.init(name,user,size,type)
@@ -50,6 +50,7 @@ module.exports = class FilePersistance {
                     `${file.getFilesize()}, "${file.getHashedName()}");`
 
 				await this.db.run(sql)
+				await fs.copy(path, file.getDirectory())
 				return file
 			} else throw new Error('File already exists')
 		} catch(err) {
@@ -117,7 +118,8 @@ module.exports = class FilePersistance {
 		}
 	}
 
-	async writeSharedFile(name,user,size,type,originalUser) {
+	// eslint-disable-next-line max-params
+	async writeSharedFile(path,name,user,size,type,originalUser) {
 		try {
 			if(!user) return false
 			if(user === originalUser) throw new Error('Cannot share to yourself')
@@ -125,13 +127,13 @@ module.exports = class FilePersistance {
 			await file.init(name,user,size,type)
 			let sql = `SELECT * FROM files WHERE filename = "${file.getFilename()}" AND user = "${user}"`
 			const data = await this.db.all(sql)
-
 			if(data.length === 0) {
 				sql = 'INSERT INTO files(filename, directory, user, filesize, hashedname)' +
                     `VALUES("${file.getFilename()}", "${file.getDirectory()}","${user}",`+
                     `${file.getFilesize()}, "${file.getHashedName()}");`
 				await this.db.run(sql)
-				return file
+				await fs.copy(path, file.getDirectory())
+				return true
 			} else throw new Error('That user already has that file')
 		} catch(err) {
 			throw err
