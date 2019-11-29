@@ -12,7 +12,7 @@
     "jsdoc": "node_modules/.bin/jsdoc -c jsdoc.conf",
     "linter": "node_modules/.bin/eslint .",
     "test": "jest --coverage --detectOpenHandles",
-    "unit": "node_modules/.bin/jest --coverage --runInBand tests/unit/"
+    "unit": "./node_modules/.bin/jest --coverage --detectOpenHandles ./unitTests/*"
   },
   "jest": {
     "projects": [
