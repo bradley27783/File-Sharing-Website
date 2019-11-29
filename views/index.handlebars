@@ -3,7 +3,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>Home Page</title>
+		<title class="title">Home Page</title>
 		<meta name="description" content="form to add new books">
 		<meta name="author" content="Mark Tyers">
 		<link href="style.css" type="text/css" rel="stylesheet" />
@@ -12,8 +12,8 @@
 	<body>
 		<h1>Home</h1>
 		<p>This is a secure page. Users need to have a valid account and be logged in to see it.</p>
-		<p><a href="/upload">upload</a></p>
-		<p><a href="/logout">log out</a></p>
+		<p><a href="/upload" id="upload">upload</a></p>
+		<p><a href="/logout" id="logout">log out</a></p>
 
 		{{#if msg}}
  			<p class="msg">{{msg}}</p>
@@ -33,7 +33,7 @@
 				<td><i class="{{this.filetype}}"></i></td>
 				<td>{{this.timestamp}}</td>
 				<td>{{this.timeleft.days}} days, {{this.timeleft.hours}} hours, {{this.timeleft.minutes}} minutes, {{this.timeleft.seconds}} seconds</td>
-				<td><a href="/download/{{this.user}}/{{this.hashedname}}">Download</a></td>
+				<td><a href="/download/{{this.user}}/{{this.hashedname}}" class="download">Download</a></td>
 				<td><a href="/email/{{this.user}}/{{this.hashedname}}">Share</a></td>
 			</tr>
 			{{/each}}
