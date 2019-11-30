@@ -31,13 +31,16 @@ class Email {
 		}
 	}
 
-	async sendEmail() {
+	async sendEmail(user,pass,to,subject,message) {
 		try {
+			this.setTransporter(user,pass)
+			this.setMailingOptions(user,to,subject,message)
 			await this.transporter.sendMail(this.mailOptions)
 		} catch (err) {
 			throw new Error('Failed to send email')
 		}
 	}
+
 }
 
 module.exports = Email

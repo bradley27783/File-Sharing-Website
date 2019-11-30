@@ -18,7 +18,7 @@ const cron = require('node-cron')
 /* IMPORT CUSTOM MODULES */
 const User = require('./modules/user')
 const FilePersistance = require('./modules/FilePersistance')
-const EmailController = require('./modules/EmailController')
+const Email = require('./modules/email')
 
 
 const app = new Koa()
@@ -37,7 +37,7 @@ const dbName = 'website.db'
 const filedb = 'file.db'
 const timepassed = 259200 // <- 3 Days in seconds
 const maxDays = 3
-const email = 'harri361340ctwork@gmail.com'
+const fromEmail = 'harri361340ctwork@gmail.com'
 const pass = 'a@auy&&Azz>X?;;aa'
 
 /**
@@ -118,12 +118,13 @@ router.get('/logout', async ctx => {
 })
 
 
-router.get('/email/:user/:filename', async ctx => {
+router.get('/email/:user', async ctx => {
 	try {
 		if(ctx.session.authorised !== true) return ctx.redirect('/login?msg=you need to log in')
-
 		const user = ctx.params.user
-		const filename = ctx.params.filename
+		const filename = ctx.query.filename
+		console.log(filename)
+		console.log('---------------')
 
 		await ctx.render('email', {user: user, file: filename})
 	} catch (err) {
@@ -131,18 +132,20 @@ router.get('/email/:user/:filename', async ctx => {
 	}
 })
 
-router.post('/sendemail/:user/:filename', koaBody, async ctx => {
+router.post('/sendemail/:user', koaBody, async ctx => {
 	try {
 		if(ctx.session.authorised !== true) return ctx.redirect('/login?msg=you need to log in')
 		const toEmail = ctx.request.body.email
 
 		const url = ctx.request.origin
 		const user = ctx.params.user
-		const filename = ctx.params.filename
-		const link = `${url}/download/${user}/${filename}`
+		const filename = ctx.query.filename
+		console.log(filename)
+		const link = `${url}/download/${user}?filename=${filename}`
 
-		const emailControl = await new EmailController()
-		emailControl.sendEmail(email,pass,toEmail,`Shared File from ${user}`,`Click the link to download: ${link}`)
+		const email = await new Email()
+		await email.sendEmail(fromEmail,pass,toEmail,`Shared File from ${user}`,`Click the link to download: ${link}`)
+		console.log('SENT')
 
 		await ctx.redirect('/', {success: `File successfully sent to ${toEmail}`})
 	} catch (err) {
@@ -150,12 +153,12 @@ router.post('/sendemail/:user/:filename', koaBody, async ctx => {
 	}
 })
 
-router.get('/download/:user/:filename', async ctx => {
+router.get('/download/:user', async ctx => {
 
 	try {
 		//Get parameters
 		//Encode this because the hash in the db is url encoded
-		const filename = encodeURIComponent(ctx.params.filename)
+		const filename = encodeURIComponent(ctx.query.filename)
 		const user = ctx.params.user
 
 		const persist = await new FilePersistance(filedb)
