@@ -8,6 +8,7 @@ const sqlite = require('sqlite-async')
 const saltRounds = 10
 
 const File = require('./file')
+const List = require('./list')
 
 
 /**
@@ -81,14 +82,19 @@ module.exports = class FilePersistance {
 		}
 	}
 
-	async readAllFiles(user) {
+	async listFiles(user,maxDays) {
 		try {
+			if (maxDays <= 0) throw new Error('Must be atleast one day')
 			const sql = `SELECT * FROM files WHERE user = "${user}"`
 			const data = await this.db.all(sql)
 			if(data === undefined || data.length === 0) {
 				throw new Error('You have no files')
 			}
-			return data
+			const list = new List()
+			const currentDate = new Date()
+			list.formatTimeLeft(data,currentDate,maxDays)
+			list.formatFiletype(data)
+			return list.files
 		} catch(err) {
 			throw err
 		}
