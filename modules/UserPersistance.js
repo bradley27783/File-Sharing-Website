@@ -50,9 +50,10 @@ module.exports = class UserPersistance {
 	}
 
 	async checkUser(user) {
+		if (user === undefined || user.length === 0) return false
 		let sql = `SELECT count(id) AS count FROM users WHERE user="${user}";`
 		const records = await this.db.get(sql)
-		if(!records.count) return false
+		if(!records.count) throw new Error('User doesnt exist')
 
 		sql = `SELECT user FROM users WHERE user="${user}";`
 		const data = await this.db.get(sql)
