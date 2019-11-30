@@ -182,7 +182,7 @@ describe('deleteStaleFile()', () => {
 	})
 })
 
-describe('readAllFiles()', () => {
+describe('listFiles()', () => {
 
 	beforeEach(async() => {
 		mock({
@@ -202,7 +202,7 @@ describe('readAllFiles()', () => {
 		await persist.writeFile('test/directory','test2.jpeg', 'user', 1000, 'image/jpeg')
 		await persist.writeFile('test/directory','test3.jpeg', 'user', 1000, 'image/jpeg')
 		//ASSERT
-		await expect(persist.readAllFiles('user'))
+		await expect(persist.listFiles('user',3))
 			.resolves.toHaveLength(3)
 		done()
 	})
@@ -213,8 +213,33 @@ describe('readAllFiles()', () => {
 		const persist = await new FilePersistance()
 		//ACT
 		//ASSERT
-		await expect(persist.readAllFiles('user'))
+		await expect(persist.listFiles('user',3))
 			.rejects.toEqual( Error('You have no files') )
+		done()
+	})
+
+	test('throw error if days < 0', async done => {
+		expect.assertions(1)
+		//ARRANGE
+		const persist = await new FilePersistance()
+		//ACT
+		//ASSERT
+		await expect(persist.listFiles('user',0))
+			.rejects.toEqual( Error('Must be atleast one day') )
+		done()
+	})
+
+	test('run correctly if 1 day', async done => {
+		expect.assertions(1)
+		//ARRANGE
+		const persist = await new FilePersistance()
+		//ACT
+		await persist.writeFile('test/directory','test1.jpeg', 'user', 1000, 'image/jpeg')
+		await persist.writeFile('test/directory','test2.jpeg', 'user', 1000, 'image/jpeg')
+		await persist.writeFile('test/directory','test3.jpeg', 'user', 1000, 'image/jpeg')
+		//ASSERT
+		await expect(persist.listFiles('user',1))
+			.resolves.toHaveLength(3)
 		done()
 	})
 })

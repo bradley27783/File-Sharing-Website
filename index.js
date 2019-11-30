@@ -17,7 +17,6 @@ const cron = require('node-cron')
 
 /* IMPORT CUSTOM MODULES */
 const User = require('./modules/user')
-const FileController = require('./modules/FileController')
 const FilePersistance = require('./modules/FilePersistance')
 const EmailController = require('./modules/EmailController')
 
@@ -54,11 +53,8 @@ router.get('/', async ctx => {
 		const data = {}
 		if(ctx.query.msg) data.msg = ctx.query.msg
 
-		const control = await new FileController()
 		const persist = await new FilePersistance(filedb)
-		let files = await persist.readAllFiles(ctx.session.user)
-		const currentDate = new Date()
-		files = control.listFiles(files,currentDate,maxDays)
+		const files = await persist.listFiles(ctx.session.user,maxDays)
 
 		await ctx.render('index', {'files': files})
 	} catch(err) {
@@ -161,7 +157,7 @@ router.get('/download/:user/:filename', async ctx => {
 		//Encode this because the hash in the db is url encoded
 		const filename = encodeURIComponent(ctx.params.filename)
 		const user = ctx.params.user
-		//const control = await new FileController()
+
 		const persist = await new FilePersistance(filedb)
 		const data = await persist.readFile(filename,user)
 		//Set body header and attachment to the file to force download
