@@ -13,7 +13,7 @@ let page
 let har
 
 beforeAll( async() => {
-	browser = await puppeteer.launch({ headless: false, slowMo: delayMS, args: [`--window-size=${width},${height}`] })
+	browser = await puppeteer.launch({ headless: true, slowMo: delayMS, args: [`--window-size=${width},${height}`] })
 	page = await browser.newPage()
 	har = new PuppeteerHar(page)
 	await page.setViewport({ width, height })
@@ -43,8 +43,9 @@ describe('Downloading', () => {
 		await page.click('input[type=submit]')
 		await page.click('#upload')
 		const input = await page.$('input[name=upload]')
-		await input.uploadFile('/home/student/Downloads/flower (5) (4).jpeg')
+		await input.uploadFile('/home/student/Downloads/sample files/image.jpeg')
 		await page.click('input[type=submit]')
+		await page.goto('http://localhost:8080/', { timeout: 30000, waitUntil: 'load' })
 		await page.click('.download')
 		//ASSERT
 		await page.waitForSelector('h1')
