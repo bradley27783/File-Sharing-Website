@@ -177,7 +177,7 @@ describe('deleteStaleFile()', () => {
 		await persist.deleteStaleFiles(timepassed)
 		//ASSERT
 		await expect( persist.readFile(file.getHashedName(),file.getUser()) )
-			.resolves.toMatchObject( {directory: 'files/user/test.jpeg'} )
+			.resolves.toHaveProperty( 'directory', 'files/user/test.jpeg' )
 		done()
 	})
 })
