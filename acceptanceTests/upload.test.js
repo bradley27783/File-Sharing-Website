@@ -13,7 +13,7 @@ let page
 let har
 
 beforeAll( async() => {
-	browser = await puppeteer.launch({ headless: false, slowMo: delayMS, args: [`--window-size=${width},${height}`] })
+	browser = await puppeteer.launch({ headless: true, slowMo: delayMS, args: [`--window-size=${width},${height}`] })
 	page = await browser.newPage()
 	har = new PuppeteerHar(page)
 	await page.setViewport({ width, height })
@@ -43,7 +43,7 @@ describe('Uploading', () => {
 		await page.click('input[type=submit]')
 		await page.click('#upload')
 		const input = await page.$('input[name=upload]')
-		await input.uploadFile('/home/student/Downloads/flower (5) (4).jpeg')
+		await input.uploadFile('/home/student/Downloads/sample files/image.jpeg')
 		await page.click('input[type=submit]')
 		//ASSERT
 		await page.waitForSelector('h1')
@@ -66,11 +66,11 @@ describe('Uploading', () => {
 		await page.click('input[type=submit]')
 		await page.click('#upload')
 		let input = await page.$('input[name=upload]')
-		await input.uploadFile('/home/student/Downloads/flower (5) (4).jpeg')
+		await input.uploadFile('/home/student/Downloads/sample files/image.jpeg')
 		await page.click('input[type=submit]')
 		await page.click('#upload')
 		input = await page.$('input[name=upload]')
-		await input.uploadFile('/home/student/Downloads/flower (5) (4).jpeg')
+		await input.uploadFile('/home/student/Downloads/sample files/image.jpeg')
 		await page.click('input[type=submit]')
 		//ASSERT
 
@@ -99,7 +99,7 @@ describe('Uploading', () => {
 		await page.click('input[type=submit]')
 		await page.click('#upload')
 		const input = await page.$('input[name=upload]')
-		await input.uploadFile('/home/student/Downloads/flower (5) (4).jpeg')
+		await input.uploadFile('/home/student/Downloads/sample files/image.jpeg')
 		await page.type('input[name=user]', 'NewUser2')
 		await page.click('input[type=submit]')
 		await page.click('#logout')

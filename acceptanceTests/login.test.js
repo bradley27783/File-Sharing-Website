@@ -61,7 +61,7 @@ describe('Registering', () => {
 		//check that error message has been sent
 		await page.waitForSelector('h2')
 		expect( await page.evaluate( () => document.querySelector('h2').innerText ) )
-			.toBe('missing username')
+			.toBe('No username given')
 
 		done()
 	}, 16000)
@@ -77,7 +77,7 @@ describe('Registering', () => {
 		//check that error message has been sent
 		await page.waitForSelector('h2')
 		expect( await page.evaluate( () => document.querySelector('h2').innerText ) )
-			.toBe('missing password')
+			.toBe('No password given')
 
 		done()
 	}, 16000)
