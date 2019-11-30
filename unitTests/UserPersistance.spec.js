@@ -102,14 +102,34 @@ describe('login()', () => {
 		done()
 	})
 
-	test('return false if user doesnt exist', async done => {
+	test('throw err if user doesnt exist', async done => {
 		expect.assertions(1)
 		//ARRANGE
 		const account = await new Accounts()
 		//ACT
 		await account.register('user', 'password')
 		//ASSERT
-		await expect(account.checkUser('test')).resolves.toBe(false)
+		await expect(account.checkUser('test')).rejects.toEqual(Error('User doesnt exist'))
+		done()
+	})
+
+	test('return false if user is undefined', async done => {
+		expect.assertions(1)
+		//ARRANGE
+		const account = await new Accounts()
+		//ACT
+		//ASSERT
+		await expect(account.checkUser(undefined)).resolves.toBe(false)
+		done()
+	})
+
+	test('return false if user is empty', async done => {
+		expect.assertions(1)
+		//ARRANGE
+		const account = await new Accounts()
+		//ACT
+		//ASSERT
+		await expect(account.checkUser('')).resolves.toBe(false)
 		done()
 	})
 })

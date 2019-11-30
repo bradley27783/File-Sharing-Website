@@ -208,8 +208,8 @@ router.post('/upload', koaBody, async ctx => {
 		const persist = await new FilePersistance(filedb)
 		const userpersist = await new UserPersistance(dbName)
 
-		await persist.writeFile(path,name,user,size,type)
 		sharedUser = await userpersist.checkUser(sharedUser)
+		await persist.writeFile(path,name,user,size,type)
 		await persist.writeSharedFile(path,name,sharedUser,size,type,user)
 		ctx.redirect('/')
 	} catch(err) {
