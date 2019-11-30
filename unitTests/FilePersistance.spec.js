@@ -78,6 +78,7 @@ describe('readFile()', () => {
 	})
 })
 
+
 describe('deleteFile()', () => {
 
 	beforeEach(async() => {
@@ -274,4 +275,44 @@ describe('writeSharedFile()', () => {
 			.rejects.toEqual(Error('Cannot share to yourself'))
 		done()
 	})
+})
+
+describe('downloadFile()', () => {
+
+	beforeEach(async() => {
+		mock({
+			'files/user/file.docx': 'File content'
+		})
+	})
+
+	afterEach(async() => {
+		afterEach(mock.restore)
+	})
+
+	test('throw err if no path passed', async done => {
+		expect.assertions(1)
+		//ARRANGE
+		const persist = await new FilePersistance()
+		//ACT
+		//ASSERT
+		await expect(persist.downloadFile())
+			.rejects.toEqual(Error('Path not defined'))
+		done()
+	})
+
+	test('processed download', async done => {
+		expect.assertions(1)
+		//ARRANGE
+		const persist = await new FilePersistance()
+
+		/** Checking if i recieved an readstream object and the
+		 * one by checking the object for the path i passed
+		*/
+		//ACT
+		//ASSERT
+		await expect(persist.downloadFile('files/user/file.docx'))
+			.resolves.toHaveProperty('path', 'files/user/file.docx')
+		done()
+	})
+
 })
