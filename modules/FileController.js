@@ -32,20 +32,6 @@ module.exports = class FileController {
 	 * @param {String} filetype - The filetype of the file e.g. image/jpeg
 	 * @returns {boolean} - Returns true when the function completes
 	 */
-	async uploadFile(path,filename,user,filesize,filetype) {
-		try {
-			if(path === undefined || path === null || path.length === 0)
-				throw new Error('Could not locate uploaded files source path')
-
-			const file = await new File()
-			await file.init(filename,user,filesize,filetype)
-
-			await fs.copy(path, file.getDirectory())
-			return true
-		} catch(err) {
-			throw err
-		}
-	}
 
 	// eslint-disable-next-line max-params
 	async uploadSharedFile(path,filename,user,filesize,filetype,originalUser) {
@@ -69,29 +55,6 @@ module.exports = class FileController {
 	 * @param {String} path - Where the file exists
 	 * @returns file - Returns a file read stream
 	 */
-
-	async downloadFile(path) {
-		try {
-			if (!fs.existsSync(path)) throw new Error('unable to locate file')
-			else {
-				return await fs.createReadStream(path)
-			}
-		} catch (err) {
-			throw err
-		}
-	}
-
-	async deleteFile(path) {
-		try {
-			if (!fs.existsSync(path)) throw new Error('unable to locate file')
-			else {
-				fs.unlink(path)
-				return true
-			}
-		} catch (err) {
-			throw err
-		}
-	}
 
 	listFiles(files,endDate,maxDays) {
 		try {

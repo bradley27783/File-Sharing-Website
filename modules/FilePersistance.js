@@ -57,8 +57,6 @@ module.exports = class FilePersistance {
 			throw err
 		}
 	}
-
-
 	async readFile(filename,user) {
 		try {
 			const sql = `SELECT * FROM files WHERE hashedname = "${filename}" AND user = "${user}"`
