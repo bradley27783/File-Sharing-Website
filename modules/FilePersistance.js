@@ -110,6 +110,8 @@ module.exports = class FilePersistance {
 		}
 	}
 
+
+	// eslint-disable-next-line complexity
 	async deleteStaleFiles(timepassed) {
 		try {
 			if(timepassed === undefined || timepassed === null || timepassed < 0) throw new Error('Invalid time passed')
@@ -117,11 +119,13 @@ module.exports = class FilePersistance {
 				let sql = 'SELECT * FROM files WHERE'+
 					`(strftime('%s',CURRENT_TIMESTAMP) - strftime('%s', timestamp)) >= ${timepassed}`
 				const data = await this.db.all(sql)
+				if (data === undefined || data.length === 0) return false
 
 				sql = 'DELETE FROM files WHERE'+
 					`(strftime('%s',CURRENT_TIMESTAMP) - strftime('%s', timestamp)) >= ${timepassed}`
 				await this.db.run(sql)
-				return data
+				data.forEach(file => fs.unlink(file.directory))
+				return true
 			}
 		} catch (err) {
 			throw err
