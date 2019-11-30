@@ -10,7 +10,7 @@
 	</head>
 	<body>
 		<h1>Email File</h1>
-		<form action="/sendemail/{{user}}/{{file}}" enctype="multipart/form-data" method="post">
+		<form action="/sendemail/{{user}}?filename={{file}}" enctype="multipart/form-data" method="post">
 			<p>Enter the persons email here<br /><input type="text" name="email" placeholder="their email" value=""></p>
 			<p><input type="submit" value="Send Email"></p>
 		</form>

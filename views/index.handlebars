@@ -33,9 +33,10 @@
 				<td><i class="{{this.filetype}}"></i></td>
 				<td>{{this.timestamp}}</td>
 				<td>{{this.timeleft.days}} days, {{this.timeleft.hours}} hours, {{this.timeleft.minutes}} minutes, {{this.timeleft.seconds}} seconds</td>
-				<td><a href="/download/{{this.user}}/{{this.hashedname}}" class="download">Download</a></td>
-				<td><a href="/email/{{this.user}}/{{this.hashedname}}">Share</a></td>
+				<td><a href="/download/{{this.user}}?filename={{this.hashedname}}" class="download">Download</a></td>
+				<td><a href="/email/{{this.user}}?filename={{this.hashedname}}">Share</a></td>
 			</tr>
 			{{/each}}
 		</table>
+	</body>
 </html>
