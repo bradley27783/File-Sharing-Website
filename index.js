@@ -16,7 +16,7 @@ const cron = require('node-cron')
 //const jimp = require('jimp')
 
 /* IMPORT CUSTOM MODULES */
-const User = require('./modules/user')
+const UserPersistance = require('./modules/UserPersistance')
 const FilePersistance = require('./modules/FilePersistance')
 const Email = require('./modules/email')
 
@@ -82,8 +82,8 @@ router.post('/register', koaBody, async ctx => {
 		const body = ctx.request.body
 		console.log(body)
 		// call the functions in the module
-		const user = await new User(dbName)
-		await user.register(body.user, body.pass)
+		const userpersist = await new UserPersistance(dbName)
+		await userpersist.register(body.user, body.pass)
 
 		// redirect to the home page
 		ctx.redirect(`/?msg=new user "${body.name}" added`)
@@ -102,8 +102,8 @@ router.get('/login', async ctx => {
 router.post('/login', async ctx => {
 	try {
 		const body = ctx.request.body
-		const user = await new User(dbName)
-		await user.login(body.user, body.pass)
+		const userpersist = await new UserPersistance(dbName)
+		await userpersist.login(body.user, body.pass)
 		ctx.session.authorised = true
 		ctx.session.user = body.user
 		return ctx.redirect('/?msg=you are now logged in...')
@@ -140,12 +140,10 @@ router.post('/sendemail/:user', koaBody, async ctx => {
 		const url = ctx.request.origin
 		const user = ctx.params.user
 		const filename = ctx.query.filename
-		console.log(filename)
 		const link = `${url}/download/${user}?filename=${filename}`
 
 		const email = await new Email()
 		await email.sendEmail(fromEmail,pass,toEmail,`Shared File from ${user}`,`Click the link to download: ${link}`)
-		console.log('SENT')
 
 		await ctx.redirect('/', {success: `File successfully sent to ${toEmail}`})
 	} catch (err) {
@@ -208,10 +206,10 @@ router.post('/upload', koaBody, async ctx => {
 		const {path,name,size,type} = ctx.request.files.upload
 
 		const persist = await new FilePersistance(filedb)
-		const account = await new User(dbName)
+		const userpersist = await new UserPersistance(dbName)
 
 		await persist.writeFile(path,name,user,size,type)
-		sharedUser = await account.checkUser(sharedUser)
+		sharedUser = await userpersist.checkUser(sharedUser)
 		await persist.writeSharedFile(path,name,sharedUser,size,type,user)
 		ctx.redirect('/')
 	} catch(err) {
