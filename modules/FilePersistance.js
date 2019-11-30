@@ -72,6 +72,15 @@ module.exports = class FilePersistance {
 		}
 	}
 
+	async downloadFile(path) {
+		try {
+			if (path === undefined || path.length === 0) throw new Error('Path not defined')
+			return await fs.createReadStream(path)
+		} catch (err) {
+			throw err
+		}
+	}
+
 	async readAllFiles(user) {
 		try {
 			const sql = `SELECT * FROM files WHERE user = "${user}"`
@@ -94,6 +103,7 @@ module.exports = class FilePersistance {
 			else {
 				sql = `DELETE FROM files WHERE id = ${id}`
 				await this.db.run(sql)
+				fs.unlink(data.directory)
 			}
 		} catch (err) {
 			throw err

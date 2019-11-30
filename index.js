@@ -161,33 +161,12 @@ router.get('/download/:user/:filename', async ctx => {
 		//Encode this because the hash in the db is url encoded
 		const filename = encodeURIComponent(ctx.params.filename)
 		const user = ctx.params.user
-		const control = await new FileController()
+		//const control = await new FileController()
 		const persist = await new FilePersistance(filedb)
 		const data = await persist.readFile(filename,user)
 		//Set body header and attachment to the file to force download
-		ctx.body = await control.downloadFile(data.directory)
-		await control.deleteFile(data.directory)
-		await persist.deleteFile(data.id)
-		ctx.attachment(data.filename)
-
-	} catch (err) {
-		await ctx.render('error', {message: err.message})
-	}
-})
-
-router.get('/download/:user/:filename', async ctx => {
-
-	try {
-		//Get parameters
-		//Encode this because the hash in the db is url encoded
-		const filename = encodeURIComponent(ctx.params.filename)
-		const user = ctx.params.user
-		const control = await new FileController()
-		const persist = await new FilePersistance(filedb)
-		const data = await persist.readFile(filename,user)
-		//Set body header and attachment to the file to force download
-		ctx.body = await control.downloadFile(data.directory)
-		await control.deleteFile(data.directory)
+		ctx.body = await persist.downloadFile(data.directory)
+		//await control.deleteFile(data.directory)
 		await persist.deleteFile(data.id)
 		ctx.attachment(data.filename)
 
@@ -232,8 +211,7 @@ router.post('/upload', koaBody, async ctx => {
 		const persist = await new FilePersistance(filedb)
 		const account = await new User(dbName)
 
-		const test = await persist.writeFile(path,name,user,size,type)
-		console.log(test)
+		await persist.writeFile(path,name,user,size,type)
 		sharedUser = await account.checkUser(sharedUser)
 		await persist.writeSharedFile(path,name,sharedUser,size,type,user)
 		ctx.redirect('/')
