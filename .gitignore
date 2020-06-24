@@ -6,3 +6,4 @@ coverage/
 screenshots/*
 docs/
 files/*
+.env

@@ -4,6 +4,8 @@
 
 'use strict'
 
+// Require env varibles
+require('dotenv').config()
 /* MODULE IMPORTS */
 const Koa = require('koa')
 const Router = require('koa-router')
@@ -37,8 +39,8 @@ const dbName = 'website.db'
 const filedb = 'file.db'
 const timepassed = 259200 // <- 3 Days in seconds
 const maxDays = 3
-const fromEmail = 'harri361340ctwork@gmail.com'
-const pass = 'a@auy&&Azz>X?;;aa'
+const fromEmail = process.env.EMAIL
+const pass = process.env.PASSWORD
 
 /**
  * The secure home page.
@@ -219,8 +221,8 @@ router.post('/upload', koaBody, async ctx => {
 
 cron.schedule('* * * * * *', async() => {
 	const persist = await new FilePersistance(filedb)
-	//await persist.deleteStaleFiles(timepassed)
-	await persist.deleteStaleFiles(60) //Done for screencast
+	await persist.deleteStaleFiles(timepassed)
+	//await persist.deleteStaleFiles(60) //Done for screencast
 })
 
 app.use(router.routes())
